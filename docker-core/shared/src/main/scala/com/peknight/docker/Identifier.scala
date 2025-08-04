@@ -10,7 +10,9 @@ object Identifier:
   sealed trait Id extends Identifier
 
   sealed trait ImageIdentifier extends Identifier
-  case class ImageName(value: String) extends ImageIdentifier with Name
+  case class ImageRepositoryTag(repository: String, tag: Option[String] = None) extends ImageIdentifier:
+    def value: String = s"$repository${tag.fold("")(t => s":$t")}"
+  end ImageRepositoryTag
   case class ImageId(value: String) extends ImageIdentifier with Id
 
   sealed trait ContainerIdentifier extends Identifier
@@ -19,7 +21,6 @@ object Identifier:
 
   sealed trait VolumeIdentifier extends Identifier
   case class VolumeName(value: String) extends VolumeIdentifier with Name
-  case class VolumeId(value: String) extends VolumeIdentifier with Id
 
   sealed trait NetworkIdentifier extends Identifier
   case class NetworkName(value: String) extends NetworkIdentifier with Name

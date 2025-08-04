@@ -4,8 +4,8 @@ import cats.Monad
 import cats.data.IorT
 import cats.effect.{MonadCancel, Resource, Sync}
 import com.peknight.cats.ext.syntax.iorT.rLiftIT
-import com.peknight.docker.Identifier.ContainerIdentifier
-import com.peknight.docker.command.{InspectOptions, RemoveOptions, StopOptions}
+import com.peknight.docker.Identifier.{ContainerIdentifier, ImageIdentifier}
+import com.peknight.docker.command.{InspectOptions, RemoveOptions, RunOptions, StopOptions}
 import com.peknight.docker.{Identifier, docker}
 import com.peknight.error.Error
 import com.peknight.error.syntax.applicativeError.aeiAsIT
@@ -31,6 +31,10 @@ package object command:
   def remove[F[_]: Processes](head: ContainerIdentifier, tail: ContainerIdentifier*)(options: RemoveOptions = RemoveOptions.default)
   : Resource[F, Process[F]] =
     ProcessBuilder(docker, com.peknight.docker.command.remove :: options.options ::: head.value :: tail.toList.map(_.value)).spawn[F]
+
+  def run[F[_]: Processes](image: ImageIdentifier)(options: RunOptions = RunOptions.default, command: Option[String] = None, args: List[String] = Nil)
+  : Resource[F, Process[F]] =
+    ProcessBuilder(docker, com.peknight.docker.command.run :: options.options ::: image.value :: command.toList ::: args).spawn[F]
 
   def stopAndRemoveContainerIfExists[F[_]: {Sync, Processes, Logger}](container: ContainerIdentifier): IorT[F, Error, Unit] =
     type G[X] = IorT[F, Error, X]
