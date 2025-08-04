@@ -1,4 +1,4 @@
-package com.peknight.docker.command
+package com.peknight.docker.option
 
 import com.peknight.docker
 import com.peknight.os.{Options, Signal}

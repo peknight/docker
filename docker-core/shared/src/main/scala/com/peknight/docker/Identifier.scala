@@ -1,6 +1,7 @@
 package com.peknight.docker
 
-import cats.Show
+import cats.{Applicative, Show}
+import com.peknight.codec.Encoder
 
 sealed trait Identifier:
   def value: String
@@ -27,4 +28,6 @@ object Identifier:
   case class NetworkId(value: String) extends NetworkIdentifier with Id
 
   given showIdentifier[I <: Identifier]: Show[I] = Show.show(_.value)
+  given stringEncodeIdentifier[F[_]: Applicative, I <: Identifier]: Encoder[F, String, I] =
+    Encoder.applicative[F, String, I](_.value)
 end Identifier

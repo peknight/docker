@@ -5,7 +5,7 @@ import cats.data.IorT
 import cats.effect.{MonadCancel, Resource, Sync}
 import com.peknight.cats.ext.syntax.iorT.rLiftIT
 import com.peknight.docker.Identifier.{ContainerIdentifier, ImageIdentifier}
-import com.peknight.docker.command.{InspectOptions, RemoveOptions, RunOptions, StopOptions}
+import com.peknight.docker.option.{InspectOptions, RemoveOptions, RunOptions, StopOptions}
 import com.peknight.docker.{Identifier, docker}
 import com.peknight.error.Error
 import com.peknight.error.syntax.applicativeError.aeiAsIT
