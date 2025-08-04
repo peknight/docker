@@ -1,11 +1,10 @@
 package com.peknight.docker.option
 
-import com.peknight.docker
-import com.peknight.os.{Options, Signal}
+import com.peknight.os.Signal
 
 import scala.concurrent.duration.Duration
 
-case class StopOptions(signal: Option[Signal] = None, timeout: Option[Duration] = None) extends Options:
+case class StopOptions(signal: Option[Signal] = None, timeout: Option[Duration] = None) extends DockerOptions:
   def options: List[String] = signal.toList.flatMap(s => List("-s", s"$s")) ::: timeout.toList.map {
     case t if t.isFinite => s"${t.toSeconds}"
     case _ => "-1"
