@@ -1,4 +1,4 @@
-package com.peknight.docker.os
+package com.peknight.docker.client
 
 import cats.Monad
 import cats.data.IorT

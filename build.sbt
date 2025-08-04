@@ -37,8 +37,8 @@ lazy val docker = (project in file("."))
   .aggregate(
     dockerCore.jvm,
     dockerCore.js,
-    dockerOs.jvm,
-    dockerOs.js,
+    dockerClient.jvm,
+    dockerClient.js,
   )
   .settings(commonSettings)
   .settings(
@@ -54,15 +54,15 @@ lazy val dockerCore = (crossProject(JSPlatform, JVMPlatform) in file("docker-cor
     ),
   )
 
-lazy val dockerOs = (crossProject(JSPlatform, JVMPlatform) in file("docker-os"))
+lazy val dockerClient = (crossProject(JSPlatform, JVMPlatform) in file("docker-client"))
   .dependsOn(dockerCore)
   .settings(commonSettings)
   .settings(
-    name := "docker-os",
+    name := "docker-client",
     libraryDependencies ++= Seq(
       "com.peknight" %%% "os-fs2" % pekOsVersion,
       "com.peknight" %%% "cats-ext" % pekExtVersion,
-      "com.peknight" %% "logging-core" % pekLoggingVersion,
+      "com.peknight" %%% "logging-core" % pekLoggingVersion,
     ),
   )
 
