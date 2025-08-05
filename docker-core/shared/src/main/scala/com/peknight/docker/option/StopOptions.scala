@@ -1,6 +1,6 @@
 package com.peknight.docker.option
 
-import com.peknight.os.Signal
+import com.peknight.os.signal.Signal
 
 import scala.concurrent.duration.Duration
 
