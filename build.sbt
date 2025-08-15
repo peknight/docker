@@ -50,7 +50,6 @@ lazy val dockerCore = (crossProject(JSPlatform, JVMPlatform) in file("docker-cor
   .settings(
     name := "docker-core",
     libraryDependencies ++= Seq(
-      "com.peknight" %%% "codec-core" % pekCodecVersion,
       "com.peknight" %%% "os-core" % pekOsVersion,
       "com.comcast" %%% "ip4s-core" % ip4sCoreVersion,
     ),
@@ -71,6 +70,5 @@ lazy val dockerClient = (crossProject(JSPlatform, JVMPlatform) in file("docker-c
 val ip4sCoreVersion = "3.7.0"
 val pekVersion = "0.1.0-SNAPSHOT"
 val pekExtVersion = pekVersion
-val pekCodecVersion = pekVersion
 val pekLoggingVersion = pekVersion
 val pekOsVersion = pekVersion
