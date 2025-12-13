@@ -41,7 +41,7 @@ package object command:
     val stopAndRemove: IorT[F, Error, Unit] =
       for
         _ <- stop[F](container)().use(isSuccess).aeiAsIT.log("Docker#stop", Some(container))
-        _ <- remove[F](container)(RemoveOptions(force = true)).use(isSuccess).aeiAsIT.log("Docker#remove", Some(container))
+        _ <- remove[F](container)(RemoveOptions(force = Some(true))).use(isSuccess).aeiAsIT.log("Docker#remove", Some(container))
       yield
         ()
     Monad[G].ifM[Unit](exists[F](container))(stopAndRemove, ().rLiftIT)

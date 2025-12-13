@@ -17,7 +17,7 @@ lazy val dockerCore = (crossProject(JVMPlatform, JSPlatform) in file("docker-cor
   .settings(crossDependencies(
     peknight.os,
     peknight.query,
-    comcast.ip4s,
+    peknight.codec.ip4s,
   ))
 
 lazy val dockerClient = (crossProject(JVMPlatform, JSPlatform) in file("docker-client"))
