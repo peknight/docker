@@ -1,3 +1,5 @@
 package com.peknight.docker.option
 
-trait DockerOptions
+trait DockerOptions:
+  def options: List[String]
+end DockerOptions
