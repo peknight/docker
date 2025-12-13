@@ -7,17 +7,16 @@ import com.peknight.codec.cursor.Cursor
 import com.peknight.codec.path.{PathElem, PathToRoot}
 import com.peknight.codec.sum.{NullType, NumberType, ObjectType, StringType}
 import com.peknight.os.signal.Signal
-import com.peknight.query.option.OptionKey
 import com.peknight.query.option.OptionKey.ShortOption
+import com.peknight.query.option.{OptionConfig, OptionKey}
+import com.peknight.query.syntax.id.query.toOptions
 
 import scala.concurrent.duration.*
 
 case class StopOptions(signal: Option[Signal] = None, timeout: Option[Duration] = None) extends DockerOptions:
   def options: List[String] =
-    signal.toList.flatMap(s => List("-s", s"$s")) ::: timeout.toList.map {
-      case t if t.isFinite => s"${t.toSeconds}"
-      case _ => "-1"
-    }.flatMap(t => List("-t", t))
+    given OptionConfig = OptionConfig(StopOptions.transformKey)
+    this.toOptions
 end StopOptions
 object StopOptions:
   val default: StopOptions = StopOptions()
