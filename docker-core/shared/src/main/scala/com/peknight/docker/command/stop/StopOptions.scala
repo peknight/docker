@@ -1,4 +1,4 @@
-package com.peknight.docker.option
+package com.peknight.docker.command.stop
 
 import cats.{Monad, Show}
 import com.peknight.codec.Codec
@@ -6,6 +6,7 @@ import com.peknight.codec.config.given
 import com.peknight.codec.cursor.Cursor
 import com.peknight.codec.path.{PathElem, PathToRoot}
 import com.peknight.codec.sum.{NullType, NumberType, ObjectType, StringType}
+import com.peknight.docker.option.DockerOptions
 import com.peknight.os.signal.Signal
 import com.peknight.query.option.OptionKey.ShortOption
 import com.peknight.query.option.{OptionConfig, OptionKey}

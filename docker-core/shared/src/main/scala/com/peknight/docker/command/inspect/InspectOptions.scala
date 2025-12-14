@@ -1,10 +1,11 @@
-package com.peknight.docker.option
+package com.peknight.docker.command.inspect
 
 import cats.{Monad, Show}
 import com.peknight.codec.config.given
 import com.peknight.codec.cursor.Cursor
 import com.peknight.codec.sum.{NullType, ObjectType, StringType}
 import com.peknight.codec.{Codec, Encoder}
+import com.peknight.docker.option.DockerOptions
 import com.peknight.query.Query
 import com.peknight.query.Query.given
 import com.peknight.query.option.given

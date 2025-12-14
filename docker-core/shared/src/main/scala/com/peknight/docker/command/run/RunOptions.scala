@@ -1,4 +1,4 @@
-package com.peknight.docker.option
+package com.peknight.docker.command.run
 
 import cats.{Monad, Show}
 import com.comcast.ip4s.Hostname
@@ -10,6 +10,7 @@ import com.peknight.codec.sum.{NullType, ObjectType, StringType}
 import com.peknight.codec.{Codec, Encoder}
 import com.peknight.docker.Identifier
 import com.peknight.docker.Identifier.ContainerName
+import com.peknight.docker.option.DockerOptions
 import com.peknight.query.option.OptionKey.ShortOption
 import com.peknight.query.option.{OptionConfig, OptionKey}
 import com.peknight.query.syntax.id.query.toOptions
