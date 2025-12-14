@@ -8,7 +8,12 @@ import org.scalatest.flatspec.AnyFlatSpec
 
 class CommandOptionsFlatSpec extends AnyFlatSpec:
   "Run Options" should "succeed" in {
-    println(RunOptions(detach = true.some, hostname = host"pek-hostname".some, name = ContainerName("pek-hostname").some,
-      restart = RestartPolicy.always.some).options)
+    println(RunOptions(
+      detach = true.some,
+      env = Map("haha" -> "hehe", "rua" -> "adsf"),
+      hostname = host"pek-hostname".some,
+      name = ContainerName("pek-hostname").some,
+      restart = RestartPolicy.always.some
+    ).options)
   }
 end CommandOptionsFlatSpec
