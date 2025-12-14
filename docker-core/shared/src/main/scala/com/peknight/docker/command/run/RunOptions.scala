@@ -16,7 +16,12 @@ import com.peknight.query.option.{OptionConfig, OptionKey}
 import com.peknight.query.syntax.id.query.toOptions
 import spire.math.Interval
 
-case class RunOptions(detach: Option[Boolean] = None, hostname: Option[Hostname] = None, name: Option[ContainerName] = None)
+case class RunOptions(
+                       detach: Option[Boolean] = None,
+                       hostname: Option[Hostname] = None,
+                       name: Option[ContainerName] = None,
+                       restart: Option[RestartPolicy] = None
+                     )
   extends DockerOptions:
   def options: List[String] =
     given OptionConfig = OptionConfig(RunOptions.transformKey, flagKeys = RunOptions.flagKeys)
