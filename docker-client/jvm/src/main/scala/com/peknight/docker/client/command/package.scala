@@ -13,7 +13,7 @@ import com.peknight.docker.{Identifier, docker}
 import com.peknight.error.Error
 import com.peknight.error.syntax.applicativeError.aeiAsIT
 import com.peknight.logging.syntax.iorT.log
-import com.peknight.os.fs2.isSuccess
+import com.peknight.os.process.isSuccess
 import fs2.Compiler
 import fs2.io.process.{Process, ProcessBuilder, Processes}
 import org.typelevel.log4cats.Logger

@@ -1,0 +1,37 @@
+package com.peknight.docker.command.run
+
+import cats.parse.Parser
+import cats.syntax.either.*
+import cats.syntax.functor.*
+import cats.syntax.option.*
+import cats.{Applicative, Id, Show}
+import com.peknight.codec.Codec
+import com.peknight.codec.cursor.Cursor
+import com.peknight.codec.error.DecodingFailure
+import com.peknight.codec.fs2.io.instances.path.stringCodecPath
+import com.peknight.codec.sum.StringType
+import fs2.io.file.Path
+
+case class VolumeMount(hostPath: Path, containerPath: Path, permission: Option[Permission] = None):
+  override def toString: String = s"${hostPath.toString}:${containerPath.toString}${permission.map(p => s":$p").getOrElse("")}"
+end VolumeMount
+object VolumeMount:
+  given stringCodecVolumeMount[F[_]: Applicative]: Codec[F, String, String, VolumeMount] =
+    Codec.applicative[F, String, String, VolumeMount](_.toString) { volumeMount =>
+      val stringParser: Parser[String] = Parser.charsWhile(_ != ':')
+      (((stringParser <* Parser.char(':')) ~ stringParser) ~ (Parser.char(':') *> stringParser.?).?)
+        .parseAll(volumeMount)
+        .left.map(DecodingFailure.apply)
+        .flatMap { case ((hostPath, containerPath), permissionOption) =>
+          for
+            host <- stringCodecPath[Id].decode(hostPath)
+            container <- stringCodecPath[Id].decode(containerPath)
+            permission <- permissionOption.flatten.map(Permission.stringCodecPermission[Id].decode.map(_.map(_.some)))
+              .getOrElse(none[Permission].asRight[DecodingFailure])
+          yield
+            VolumeMount(host, container, permission)
+        }
+    }
+  given codecVolumeMount[F[_]: Applicative, S: {StringType, Show}]: Codec[F, S, Cursor[S], VolumeMount] =
+    Codec.codecS[F, S, VolumeMount]
+end VolumeMount

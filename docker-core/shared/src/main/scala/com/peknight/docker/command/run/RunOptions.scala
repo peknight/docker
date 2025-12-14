@@ -9,14 +9,13 @@ import com.peknight.codec.config.given
 import com.peknight.codec.cursor.Cursor
 import com.peknight.codec.error.DecodingFailure
 import com.peknight.codec.ip4s.instances.host.given
-import com.peknight.codec.path.{PathElem, PathToRoot}
 import com.peknight.codec.sum.{ArrayType, NullType, ObjectType, StringType}
 import com.peknight.codec.{Codec, Decoder, Encoder}
 import com.peknight.docker.Identifier
 import com.peknight.docker.Identifier.ContainerName
 import com.peknight.docker.option.DockerOptions
+import com.peknight.query.option.OptionConfig
 import com.peknight.query.option.OptionKey.ShortOption
-import com.peknight.query.option.{OptionConfig, OptionKey}
 import com.peknight.query.parser.pairParser
 import com.peknight.query.syntax.id.query.toOptions
 import spire.math.Interval
@@ -26,11 +25,17 @@ case class RunOptions(
                        env: Map[String, String] = Map.empty,
                        hostname: Option[Hostname] = None,
                        name: Option[ContainerName] = None,
-                       restart: Option[RestartPolicy] = None
+                       restart: Option[RestartPolicy] = None,
+                       volume: List[VolumeMount] = Nil
                      )
   extends DockerOptions:
   def options: List[String] =
-    given OptionConfig = OptionConfig(RunOptions.transformKey, flagKeys = RunOptions.flagKeys)
+    given OptionConfig = OptionConfig.transformObjectKey(flagKeys = List("detach")) {
+      case "detach" => List(ShortOption('d', argLen = Interval.point(0)))
+      case "env" => List(ShortOption('e'))
+      case "hostname" => List(ShortOption('h'))
+      case "volume" => List(ShortOption('v'))
+    }
     this.toOptions
 end RunOptions
 object RunOptions:
@@ -50,16 +55,4 @@ object RunOptions:
       }
     }
     Codec.derived[F, S, RunOptions]
-
-  private def transformKey(pathToRoot: PathToRoot): List[OptionKey] =
-    val lastKeyName = pathToRoot.value
-      .collect { case objectKey: PathElem.ObjectKey => objectKey.keyName }
-      .lastOption
-    lastKeyName match
-      case Some("detach") => List(ShortOption('d', argLen = Interval.point(0)))
-      case Some("env") => List(ShortOption('e'))
-      case Some("hostname") => List(ShortOption('h'))
-      case _ => Nil
-
-  private val flagKeys: List[String] = List("detach")
 end RunOptions
