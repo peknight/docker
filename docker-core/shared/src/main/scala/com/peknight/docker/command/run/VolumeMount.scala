@@ -12,12 +12,12 @@ import com.peknight.codec.fs2.io.instances.path.stringCodecPath
 import com.peknight.codec.sum.StringType
 import fs2.io.file.Path
 
-case class VolumeMount(hostPath: Path, containerPath: Path, permission: Option[Permission] = None):
-  override def toString: String = s"${hostPath.toString}:${containerPath.toString}${permission.map(p => s":$p").getOrElse("")}"
-end VolumeMount
+case class VolumeMount(hostPath: Path, containerPath: Path, permission: Option[Permission] = None)
 object VolumeMount:
   given stringCodecVolumeMount[F[_]: Applicative]: Codec[F, String, String, VolumeMount] =
-    Codec.applicative[F, String, String, VolumeMount](_.toString) { volumeMount =>
+    Codec.applicative[F, String, String, VolumeMount](volumeMount =>
+      s"${volumeMount.hostPath}:${volumeMount.containerPath}${volumeMount.permission.map(p => s":$p").getOrElse("")}"
+    ) { volumeMount =>
       val stringParser: Parser[String] = Parser.charsWhile(_ != ':')
       (((stringParser <* Parser.char(':')) ~ stringParser) ~ (Parser.char(':') *> stringParser.?).?)
         .parseAll(volumeMount)

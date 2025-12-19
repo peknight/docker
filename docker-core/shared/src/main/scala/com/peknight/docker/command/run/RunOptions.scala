@@ -5,12 +5,14 @@ import cats.syntax.functor.*
 import cats.syntax.traverse.*
 import cats.{Monad, Show}
 import com.comcast.ip4s.Hostname
-import com.peknight.codec.config.given
+import com.peknight.codec.config.CodecConfig
 import com.peknight.codec.cursor.Cursor
 import com.peknight.codec.error.DecodingFailure
 import com.peknight.codec.ip4s.instances.host.given
 import com.peknight.codec.sum.{ArrayType, NullType, ObjectType, StringType}
 import com.peknight.codec.{Codec, Decoder, Encoder}
+import com.peknight.commons.text.cases.KebabCase
+import com.peknight.commons.text.syntax.cases.to
 import com.peknight.docker.Identifier
 import com.peknight.docker.Identifier.ContainerName
 import com.peknight.docker.option.DockerOptions
@@ -21,6 +23,7 @@ import com.peknight.query.syntax.id.query.toOptions
 import spire.math.Interval
 
 case class RunOptions(
+                       addHost: List[HostToIP] = List.empty,
                        detach: Option[Boolean] = None,
                        env: Map[String, String] = Map.empty,
                        hostname: Option[Hostname] = None,
@@ -42,6 +45,7 @@ object RunOptions:
   val default: RunOptions = RunOptions()
 
   given codecRunOptions[F[_]: Monad, S: {ObjectType, NullType, ArrayType, StringType, Show}]: Codec[F, S, Cursor[S], RunOptions] =
+    given CodecConfig = CodecConfig.default.withTransformMemberName(_.to(KebabCase))
     given Codec[F, S, Cursor[S], Map[String, String]] = {
       Codec.instance[F, S, Cursor[S], Map[String, String]] { map =>
         ArrayType[S].to(map.map { case (k, v) => StringType[S].to(s"$k=$v") }.toVector).pure[F]
