@@ -16,6 +16,7 @@ import com.peknight.commons.text.syntax.cases.to
 import com.peknight.docker.Identifier
 import com.peknight.docker.Identifier.ContainerName
 import com.peknight.docker.option.DockerOptions
+import com.peknight.os.group.Group
 import com.peknight.query.option.OptionConfig
 import com.peknight.query.option.OptionKey.ShortOption
 import com.peknight.query.parser.pairParser
@@ -26,6 +27,7 @@ case class RunOptions(
                        addHost: List[HostToIP] = List.empty,
                        detach: Option[Boolean] = None,
                        env: Map[String, String] = Map.empty,
+                       groupAdd: List[Group] = List.empty,
                        hostname: Option[Hostname] = None,
                        name: Option[ContainerName] = None,
                        restart: Option[RestartPolicy] = None,
