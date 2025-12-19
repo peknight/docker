@@ -2,7 +2,7 @@ package com.peknight.docker.command
 
 import cats.syntax.option.*
 import com.comcast.ip4s.{host, ipv4, ipv6}
-import com.peknight.docker.Identifier.ContainerName
+import com.peknight.docker.Identifier.{ContainerName, NetworkName}
 import com.peknight.docker.command.run.{HostToIP, RestartPolicy, RunOptions, VolumeMount}
 import com.peknight.os.group.Group.{GroupId, GroupName}
 import fs2.io.file.Path
@@ -16,7 +16,9 @@ class CommandOptionsFlatSpec extends AnyFlatSpec:
       env = Map("haha" -> "hehe", "rua" -> "asdf"),
       groupAdd = List(GroupId(999), GroupName("docker")),
       hostname = host"pek-hostname".some,
+      ip = ipv4"172.18.0.2".some,
       name = ContainerName("pek-hostname").some,
+      network = NetworkName("pek-network").some,
       restart = RestartPolicy.always.some,
       volume = List(VolumeMount(Path("/a/b") / Path("c"), Path("/d") / Path("e")))
     ).options)

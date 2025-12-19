@@ -4,7 +4,7 @@ import cats.syntax.applicative.*
 import cats.syntax.functor.*
 import cats.syntax.traverse.*
 import cats.{Monad, Show}
-import com.comcast.ip4s.Hostname
+import com.comcast.ip4s.{Hostname, IpAddress}
 import com.peknight.codec.config.CodecConfig
 import com.peknight.codec.cursor.Cursor
 import com.peknight.codec.error.DecodingFailure
@@ -14,7 +14,7 @@ import com.peknight.codec.{Codec, Decoder, Encoder}
 import com.peknight.commons.text.cases.KebabCase
 import com.peknight.commons.text.syntax.cases.to
 import com.peknight.docker.Identifier
-import com.peknight.docker.Identifier.ContainerName
+import com.peknight.docker.Identifier.{ContainerName, NetworkIdentifier}
 import com.peknight.docker.option.DockerOptions
 import com.peknight.os.group.Group
 import com.peknight.query.option.OptionConfig
@@ -29,7 +29,9 @@ case class RunOptions(
                        env: Map[String, String] = Map.empty,
                        groupAdd: List[Group] = List.empty,
                        hostname: Option[Hostname] = None,
+                       ip: Option[IpAddress] = None,
                        name: Option[ContainerName] = None,
+                       network: Option[NetworkIdentifier] = None,
                        restart: Option[RestartPolicy] = None,
                        volume: List[VolumeMount] = Nil
                      )
