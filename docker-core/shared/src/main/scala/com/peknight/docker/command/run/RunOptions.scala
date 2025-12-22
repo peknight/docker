@@ -3,13 +3,13 @@ package com.peknight.docker.command.run
 import cats.syntax.applicative.*
 import cats.syntax.functor.*
 import cats.syntax.traverse.*
-import cats.{Monad, Show}
+import cats.{Id, Monad, Show}
 import com.comcast.ip4s.{Hostname, IpAddress}
 import com.peknight.codec.config.CodecConfig
 import com.peknight.codec.cursor.Cursor
 import com.peknight.codec.error.DecodingFailure
 import com.peknight.codec.ip4s.instances.host.given
-import com.peknight.codec.sum.{ArrayType, NullType, ObjectType, StringType}
+import com.peknight.codec.sum.*
 import com.peknight.codec.{Codec, Decoder, Encoder}
 import com.peknight.commons.text.cases.KebabCase
 import com.peknight.commons.text.syntax.cases.to
@@ -48,8 +48,12 @@ end RunOptions
 object RunOptions:
   val default: RunOptions = RunOptions()
 
-  given codecRunOptions[F[_]: Monad, S: {ObjectType, NullType, ArrayType, StringType, Show}]: Codec[F, S, Cursor[S], RunOptions] =
+  given codecRunOptions[F[_]: Monad, S: {ObjectType, NullType, ArrayType, BooleanType, StringType, Show}]
+  : Codec[F, S, Cursor[S], RunOptions] =
     given CodecConfig = CodecConfig.default.withTransformMemberName(_.to(KebabCase))
+    given Codec[F, S, Cursor[S], Boolean] = Codec.applicative[F, S, Cursor[S], Boolean](
+      flag => if flag then BooleanType[S].to(true) else NullType[S].unit
+    )(Decoder.decodeBooleanBS[Id, S].decode)
     given Codec[F, S, Cursor[S], Map[String, String]] = {
       Codec.instance[F, S, Cursor[S], Map[String, String]] { map =>
         ArrayType[S].to(map.map { case (k, v) => StringType[S].to(s"$k=$v") }.toVector).pure[F]

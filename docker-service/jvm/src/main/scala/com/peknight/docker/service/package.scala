@@ -1,0 +1,59 @@
+package com.peknight.docker
+
+import cats.Monad
+import cats.data.IorT
+import cats.effect.{MonadCancel, Sync}
+import cats.syntax.option.*
+import com.comcast.ip4s.Hostname
+import com.peknight.cats.ext.syntax.iorT.rLiftIT
+import com.peknight.docker.Identifier
+import com.peknight.docker.Identifier.{ContainerName, ImageIdentifier}
+import com.peknight.docker.client.command.{inspect, remove, stop, run as runContainer}
+import com.peknight.docker.command.remove.RemoveOptions
+import com.peknight.docker.command.run.RunOptions
+import com.peknight.error.Error
+import com.peknight.error.syntax.applicativeError.aeiAsIT
+import com.peknight.logging.syntax.iorT.log
+import com.peknight.os.process.isSuccess
+import fs2.Compiler
+import fs2.io.process.Processes
+import org.typelevel.log4cats.Logger
+
+package object service:
+
+  def exists[F[_]](identifier: Identifier)(using MonadCancel[F, Throwable], Processes[F], Compiler[F, F])
+  : IorT[F, Error, Boolean] =
+    inspect[F](identifier)().use(isSuccess).aeiAsIT
+
+  private def ifExists[F[_], I <: Identifier, A](identifier: I)(iorT: IorT[F, Error, A])
+                                                (using MonadCancel[F, Throwable], Processes[F], Compiler[F, F])
+  : IorT[F, Error, Option[A]] =
+    type G[X] = IorT[F, Error, X]
+    Monad[G].ifM[Option[A]](exists[F](identifier))(iorT.map(_.some), none[A].rLiftIT)
+
+  private def ifNotExists[F[_], I <: Identifier, A](identifier: I)(iorT: IorT[F, Error, A])
+                                                   (using MonadCancel[F, Throwable], Processes[F], Compiler[F, F])
+  : IorT[F, Error, Option[A]] =
+    type G[X] = IorT[F, Error, X]
+    Monad[G].ifM[Option[A]](exists[F](identifier))(none[A].rLiftIT, iorT.map(_.some))
+
+  def run[F[_]: {Sync, Processes, Logger}](image: ImageIdentifier, container: ContainerName)
+                                          (runOptions: RunOptions = RunOptions.default,
+                                           command: Option[String] = None,
+                                           args: List[String] = Nil): IorT[F, Error, Unit] =
+    for
+      _ <- ifExists[F, ContainerName, Unit](container) {
+        for
+          _ <- stop[F](container)().use(isSuccess).aeiAsIT.log("Docker#stop", Some(container))
+          _ <- remove[F](container)(RemoveOptions(force = Some(true))).use(isSuccess).aeiAsIT.log("Docker#remove", Some(container))
+        yield
+          ()
+      }
+      _ <- runContainer[F](image)(runOptions.copy(
+        detach = runOptions.detach.orElse(true.some),
+        hostname = runOptions.hostname.orElse(Hostname.fromString(container.value)),
+        name = runOptions.name.orElse(container.some),
+      ), command, args).use(isSuccess[F]).aeiAsIT.log("Docker#run", Some(container))
+    yield
+      ()
+end service
