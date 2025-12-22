@@ -1,8 +1,9 @@
 package com.peknight.docker.command
 
 import cats.syntax.option.*
-import com.comcast.ip4s.{host, ipv4, ipv6}
+import com.comcast.ip4s.*
 import com.peknight.docker.Identifier.{ContainerName, NetworkName}
+import com.peknight.docker.command.network.create.NetworkCreateOptions
 import com.peknight.docker.command.run.{HostToIP, RestartPolicy, RunOptions, VolumeMount}
 import com.peknight.os.group.Group.{GroupId, GroupName}
 import fs2.io.file.Path
@@ -21,6 +22,13 @@ class CommandOptionsFlatSpec extends AnyFlatSpec:
       network = NetworkName("pek-network").some,
       restart = RestartPolicy.always.some,
       volume = List(VolumeMount(Path("/a/b") / Path("c"), Path("/d") / Path("e")))
+    ).options)
+  }
+
+  "Network Create Options" should "succeed" in {
+    println(NetworkCreateOptions(
+      subnet = Cidr[Ipv4Address](ipv4"172.18.0.0", 16).some,
+      gateway = ipv4"172.18.0.1".some
     ).options)
   }
 end CommandOptionsFlatSpec

@@ -7,8 +7,10 @@ import cats.syntax.option.*
 import com.comcast.ip4s.Hostname
 import com.peknight.cats.ext.syntax.iorT.rLiftIT
 import com.peknight.docker.Identifier
-import com.peknight.docker.Identifier.{ContainerName, ImageIdentifier}
+import com.peknight.docker.Identifier.{ContainerName, ImageIdentifier, NetworkName}
+import com.peknight.docker.client.command.network.create as createNetwork
 import com.peknight.docker.client.command.{inspect, remove, stop, run as runContainer}
+import com.peknight.docker.command.network.create.NetworkCreateOptions
 import com.peknight.docker.command.remove.RemoveOptions
 import com.peknight.docker.command.run.RunOptions
 import com.peknight.error.Error
@@ -36,6 +38,15 @@ package object service:
   : IorT[F, Error, Option[A]] =
     type G[X] = IorT[F, Error, X]
     Monad[G].ifM[Option[A]](exists[F](identifier))(none[A].rLiftIT, iorT.map(_.some))
+
+  def createNetworkIfNotExists[F[_]: {Sync, Processes, Logger}](network: NetworkName)(
+    networkCreateOptions: NetworkCreateOptions = NetworkCreateOptions.default): IorT[F, Error, Unit] =
+    for
+      _ <- ifNotExists[F, NetworkName, Boolean](network) {
+        createNetwork[F](network)(networkCreateOptions).use(isSuccess).aeiAsIT.log("Docker#networkCreate", Some(network))
+      }
+    yield
+      ()
 
   def run[F[_]: {Sync, Processes, Logger}](image: ImageIdentifier, container: ContainerName)
                                           (runOptions: RunOptions = RunOptions.default,
