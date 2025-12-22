@@ -9,5 +9,6 @@ import fs2.io.process.{Process, ProcessBuilder, Processes}
 package object network:
   def create[F[_]: Processes](network: NetworkIdentifier)(options: NetworkCreateOptions = NetworkCreateOptions.default)
   : Resource[F, Process[F]] =
-    ProcessBuilder(docker, com.peknight.docker.command.network.command :: com.peknight.docker.command.network.create.command :: options.options ::: network.value :: Nil).spawn[F]
+    ProcessBuilder(docker, com.peknight.docker.command.network.command ::
+      com.peknight.docker.command.network.create.command :: options.options ::: network.value :: Nil).spawn[F]
 end network

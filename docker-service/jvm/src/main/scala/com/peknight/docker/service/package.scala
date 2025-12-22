@@ -55,8 +55,10 @@ package object service:
     for
       _ <- ifExists[F, ContainerName, Unit](container) {
         for
-          _ <- stop[F](container)().use(isSuccess).aeiAsIT.log("Docker#stop", Some(container))
-          _ <- remove[F](container)(RemoveOptions(force = Some(true))).use(isSuccess).aeiAsIT.log("Docker#remove", Some(container))
+          _ <- stop[F](container)()
+            .use(isSuccess).aeiAsIT.log("Docker#stop", Some(container))
+          _ <- remove[F](container)(RemoveOptions(force = Some(true)))
+            .use(isSuccess).aeiAsIT.log("Docker#remove", Some(container))
         yield
           ()
       }
