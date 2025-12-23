@@ -9,9 +9,9 @@ import com.peknight.cats.ext.syntax.iorT.rLiftIT
 import com.peknight.docker.Identifier
 import com.peknight.docker.Identifier.{ContainerName, ImageIdentifier, NetworkName}
 import com.peknight.docker.client.command.network.create as createNetwork
-import com.peknight.docker.client.command.{inspect, rm, stop, run as runContainer}
+import com.peknight.docker.client.command.{inspect, rm, rmi, stop, run as runContainer}
 import com.peknight.docker.command.network.create.NetworkCreateOptions
-import com.peknight.docker.command.remove.RemoveOptions
+import com.peknight.docker.command.remove.{RemoveImageOptions, RemoveOptions}
 import com.peknight.docker.command.run.RunOptions
 import com.peknight.error.Error
 import com.peknight.error.syntax.applicativeError.aeiAsIT
@@ -44,6 +44,15 @@ package object service:
     for
       _ <- ifNotExists[F, NetworkName, Boolean](network) {
         createNetwork[F](network)(networkCreateOptions).use(isSuccess).aeiAsIT.log("Docker#networkCreate", Some(network))
+      }
+    yield
+      ()
+
+  def removeImageIfExists[F[_]: {Sync, Processes, Logger}](image: ImageIdentifier)(
+    removeImageOptions: RemoveImageOptions = RemoveImageOptions.default): IorT[F, Error, Unit] =
+    for
+      _ <- ifExists[F, ImageIdentifier, Boolean](image) {
+        rmi[F](image)(removeImageOptions).use(isSuccess).aeiAsIT.log("Docker#removeImage", Some(image))
       }
     yield
       ()
