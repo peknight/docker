@@ -9,7 +9,7 @@ import com.peknight.cats.ext.syntax.iorT.rLiftIT
 import com.peknight.docker.Identifier
 import com.peknight.docker.Identifier.{ContainerName, ImageIdentifier, NetworkName}
 import com.peknight.docker.client.command.network.create as createNetwork
-import com.peknight.docker.client.command.{inspect, remove, stop, run as runContainer}
+import com.peknight.docker.client.command.{inspect, rm, stop, run as runContainer}
 import com.peknight.docker.command.network.create.NetworkCreateOptions
 import com.peknight.docker.command.remove.RemoveOptions
 import com.peknight.docker.command.run.RunOptions
@@ -57,7 +57,7 @@ package object service:
         for
           _ <- stop[F](container)()
             .use(isSuccess).aeiAsIT.log("Docker#stop", Some(container))
-          _ <- remove[F](container)(RemoveOptions(force = Some(true)))
+          _ <- rm[F](container)(RemoveOptions(force = Some(true)))
             .use(isSuccess).aeiAsIT.log("Docker#remove", Some(container))
         yield
           ()

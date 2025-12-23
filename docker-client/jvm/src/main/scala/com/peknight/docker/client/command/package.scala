@@ -15,8 +15,8 @@ package object command:
     ProcessBuilder(docker, com.peknight.docker.command.inspect.command :: options.options ::: identifier.value :: Nil)
       .spawn[F]
 
-  def remove[F[_] : Processes](head: ContainerIdentifier, tail: ContainerIdentifier*)
-                              (options: RemoveOptions = RemoveOptions.default): Resource[F, Process[F]] =
+  def rm[F[_] : Processes](head: ContainerIdentifier, tail: ContainerIdentifier*)
+                          (options: RemoveOptions = RemoveOptions.default): Resource[F, Process[F]] =
     ProcessBuilder(docker, com.peknight.docker.command.remove.command :: options.options ::: head.value ::
       tail.toList.map(_.value)).spawn[F]
 
