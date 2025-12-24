@@ -5,7 +5,7 @@ import cats.data.IorT
 import cats.effect.{MonadCancel, Sync}
 import cats.syntax.option.*
 import com.comcast.ip4s.Hostname
-import com.peknight.cats.ext.syntax.iorT.rLiftIT
+import com.peknight.cats.syntax.iorT.rLiftIT
 import com.peknight.docker.Identifier
 import com.peknight.docker.Identifier.{ContainerName, ImageIdentifier, NetworkName}
 import com.peknight.docker.client.command.network.create as createNetwork
