@@ -10,7 +10,7 @@ import fs2.io.file.Path
 import org.scalatest.flatspec.AnyFlatSpec
 
 class CommandOptionsFlatSpec extends AnyFlatSpec:
-  "Run Options" should "succeed" in {
+  "Run Options" should "pass" in {
     println(RunOptions(
       addHost = List(HostToIP(host"www.peknight.com", ipv6"::1"), HostToIP(host"local.peknight.com", ipv4"127.0.0.1")),
       detach = true.some,
@@ -25,7 +25,7 @@ class CommandOptionsFlatSpec extends AnyFlatSpec:
     ).options)
   }
 
-  "Network Create Options" should "succeed" in {
+  "Network Create Options" should "pass" in {
     println(NetworkCreateOptions(
       subnet = Cidr[Ipv4Address](ipv4"172.18.0.0", 16).some,
       gateway = ipv4"172.18.0.1".some
