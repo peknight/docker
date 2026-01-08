@@ -1,9 +1,7 @@
 package com.peknight.docker
 
-import cats.parse.Parser
 import cats.{Applicative, Show}
 import com.peknight.codec.cursor.Cursor
-import com.peknight.codec.error.DecodingFailure
 import com.peknight.codec.sum.StringType
 import com.peknight.codec.{Decoder, Encoder}
 
@@ -22,8 +20,18 @@ object Identifier:
   case class RawId(value: String) extends Id
 
   sealed trait ImageIdentifier extends Identifier
-  case class ImageRepositoryTag(repository: String, tag: Option[String] = None) extends ImageIdentifier:
+  case class ImageRepositoryTag(repository: Repository, tag: Option[Tag] = None) extends ImageIdentifier:
     def value: String = s"$repository${tag.fold("")(t => s":$t")}"
+  end ImageRepositoryTag
+  object ImageRepositoryTag:
+    def fromString(value: String): Option[ImageRepositoryTag] =
+      Repository.fromStringF[ImageRepositoryTag](value) { (registry, namespace, last) =>
+        if last.startsWith(":") || last.endsWith(":") then None else
+          val index = last.indexOf(':')
+          val (repository, tag) =
+            if index >= 0 then (last.substring(0, index), Some(Tag(last.substring(index + 1)))) else (last, None)
+          Some(ImageRepositoryTag(Repository(registry, namespace, repository), tag))
+      }
   end ImageRepositoryTag
   case class ImageId(value: String) extends ImageIdentifier with Id
 
@@ -42,7 +50,7 @@ object Identifier:
   given stringEncodeIdentifier[F[_]: Applicative, I <: Identifier]: Encoder[F, String, I] =
     Encoder.applicative[F, String, I](_.value)
 
-  given encodeIdentifier[F[_]: Applicative, S: StringType, I <: Identifier]: Encoder[F, S, I] =
+  given encodeIdentifierS[F[_]: Applicative, S: StringType, I <: Identifier]: Encoder[F, S, I] =
     Encoder.encodeS[F, S, I]
 
   given stringDecodeRawIdentifier[F[_]: Applicative]: Decoder[F, String, RawIdentifier] =
@@ -58,12 +66,7 @@ object Identifier:
   given stringDecodeId[F[_]: Applicative]: Decoder[F, String, Id] =
     Decoder.map(RawId.apply)
   given stringDecodeImageRepositoryTag[F[_]: Applicative]: Decoder[F, String, ImageRepositoryTag] =
-    Decoder.applicative(repositoryTag =>
-      (Parser.charsWhile(_ != ':').string ~ (Parser.char(':') *> Parser.anyChar.rep.string).?)
-        .map(ImageRepositoryTag.apply)
-        .parseAll(repositoryTag)
-        .left.map(DecodingFailure.apply)
-    )
+    Decoder.mapOption(ImageRepositoryTag.fromString)
   given stringDecodeImageId[F[_]: Applicative]: Decoder[F, String, ImageId] =
     Decoder.map(ImageId.apply)
   given stringDecodeImageIdentifier[F[_]: Applicative]: Decoder[F, String, ImageIdentifier] =
@@ -85,7 +88,7 @@ object Identifier:
   given stringDecodeNetworkIdentifier[F[_]: Applicative]: Decoder[F, String, NetworkIdentifier] =
     Decoder.map(NetworkName.apply)
 
-  given decodeIdentifier[F[_], S, I <: Identifier](using Applicative[F], StringType[S], Show[S], ClassTag[I], Decoder[F, String, I])
+  given decodeIdentifierS[F[_], S, I <: Identifier](using Applicative[F], StringType[S], Show[S], ClassTag[I], Decoder[F, String, I])
   : Decoder[F, Cursor[S], I] =
     Decoder.decodeS[F, S, I]
 end Identifier
