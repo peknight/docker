@@ -2,7 +2,7 @@ package com.peknight.docker
 
 import com.comcast.ip4s.host
 import com.peknight.build.gav.peknight.version
-import com.peknight.docker.Identifier.ImageRepositoryTag
+import com.peknight.docker.Identifier.{ContainerName, ImageRepositoryTag}
 import com.peknight.ip4s.HostPort
 
 package object custom:
@@ -15,4 +15,5 @@ package object custom:
     Tag(s"$version-backup${identifier.filter(_.nonEmpty).fold("")(id => s"-$id")}")
   val backupTag: Tag = backupTag(version, None)
   def backupImage(repo: String, tag: Tag = backupTag): ImageRepositoryTag = image(repo, Some(tag))
+  def container(repo: String): ContainerName = ContainerName(s"pek-$repo")
 end custom
