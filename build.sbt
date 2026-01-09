@@ -43,4 +43,5 @@ lazy val dockerCustom = (crossProject(JVMPlatform, JSPlatform) in file("docker-c
   .settings(crossDependencies(
     peknight.build.gav,
     peknight.fs2.io,
+    peknight.app,
   ))

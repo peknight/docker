@@ -5,6 +5,7 @@ import cats.data.IorT
 import cats.effect.Sync
 import cats.syntax.applicative.*
 import cats.syntax.option.*
+import com.peknight.app.AppName
 import com.peknight.cats.syntax.iorT.rLiftIT
 import com.peknight.docker.command.run.Permission.ro
 import com.peknight.docker.command.run.{RestartPolicy, RunOptions, VolumeMount}
@@ -22,10 +23,10 @@ import fs2.io.process.Processes
 import org.typelevel.log4cats.Logger
 
 package object service:
-  def runScalaApp[F[_]: {Sync, Files, Processes, Logger}](appName: String)(env: Map[String, String] = Map.empty)
+  def runScalaApp[F[_]: {Sync, Files, Processes, Logger}](appName: AppName)(env: Map[String, String] = Map.empty)
   : IorT[F, Error, Boolean] =
-    val appHome: Path = opt / appName
-    val logDirectory: Path = varLog / appName
+    val appHome: Path = opt / appName.value
+    val logDirectory: Path = varLog / appName.value
     val certsDirectory: Path = appHome / certs
     val logsDirectory: Path = appHome / logs
     type G[X] = IorT[F, Error, X]
@@ -34,9 +35,9 @@ package object service:
       _ <- Files[F].createDirectories(certsDirectory).asIT
       _ <- Monad[F].ifM[Unit](Files[F].exists(logsDirectory))(().pure[F],
         Files[F].createSymbolicLink(logsDirectory, logDirectory)).asIT
-      image = customImage(appName)
-      backupImage = customBackupImage(appName)
-      container = customContainer(appName)
+      image = customImage(appName.value)
+      backupImage = customBackupImage(appName.value)
+      container = customContainer(appName.value)
       res <- Monad[G].ifM[Boolean](runContainer[F](image, container)(RunOptions(
         restart = RestartPolicy.`unless-stopped`.some,
         env = env,
@@ -51,6 +52,6 @@ package object service:
     yield
       res
 
-  def renameImageAsBackup[F[_]: {Sync, Processes, Logger}](appName: String): IorT[F, Error, Boolean] =
-    renameImageIfExists[F](customImage(appName), customBackupImage(appName))()
+  def renameImageAsBackup[F[_]: {Sync, Processes, Logger}](appName: AppName): IorT[F, Error, Boolean] =
+    renameImageIfExists[F](customImage(appName.value), customBackupImage(appName.value))()
 end service
