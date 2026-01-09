@@ -14,6 +14,8 @@ lazy val docker = (project in file("."))
     dockerService.js,
     dockerCustom.jvm,
     dockerCustom.js,
+    dockerBuild.jvm,
+    dockerBuild.js,
   )
 
 lazy val dockerCore = (crossProject(JVMPlatform, JSPlatform) in file("docker-core"))
@@ -45,3 +47,7 @@ lazy val dockerCustom = (crossProject(JVMPlatform, JSPlatform) in file("docker-c
     peknight.fs2.io,
     peknight.app,
   ))
+
+lazy val dockerBuild = (crossProject(JVMPlatform, JSPlatform) in file("docker-build"))
+  .dependsOn(dockerCore)
+  .settings(name := "docker-build")
