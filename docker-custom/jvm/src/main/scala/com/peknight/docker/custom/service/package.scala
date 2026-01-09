@@ -5,16 +5,17 @@ import cats.data.IorT
 import cats.effect.Sync
 import cats.syntax.applicative.*
 import cats.syntax.option.*
+import com.comcast.ip4s.{Cidr, Ipv4Address, ipv4}
 import com.peknight.app.AppName
 import com.peknight.cats.syntax.iorT.rLiftIT
+import com.peknight.docker.command.network.create.NetworkCreateOptions
 import com.peknight.docker.command.run.Permission.ro
 import com.peknight.docker.command.run.{RestartPolicy, RunOptions, VolumeMount}
-import com.peknight.docker.custom.{backupImage as customBackupImage, container as customContainer, image as customImage}
+import com.peknight.docker.custom.{backupImage as customBackupImage, container as customContainer, image as customImage, network as customNetwork}
 import com.peknight.docker.custom.{backupImage as customBackupImage, image as customImage}
 import com.peknight.docker.network
 import com.peknight.docker.path.docker
-import com.peknight.docker.service.run as runContainer
-import com.peknight.docker.service.{removeImageIfExists, renameImageIfExists, run as runContainer}
+import com.peknight.docker.service.{createNetworkIfNotExists, removeImageIfExists, renameImageIfExists, run as runContainer}
 import com.peknight.error.Error
 import com.peknight.error.syntax.applicativeError.asIT
 import com.peknight.fs2.io.file.path.*
@@ -54,4 +55,8 @@ package object service:
 
   def renameImageAsBackup[F[_]: {Sync, Processes, Logger}](appName: AppName): IorT[F, Error, Boolean] =
     renameImageIfExists[F](customImage(appName.value), customBackupImage(appName.value))()
+
+  def createNetwork[F[_]: {Sync, Processes, Logger}]: IorT[F, Error, Boolean] =
+    createNetworkIfNotExists[F](customNetwork)(NetworkCreateOptions(
+      Cidr[Ipv4Address](ipv4"172.18.0.0", 16).some, ipv4"172.18.0.1".some))
 end service

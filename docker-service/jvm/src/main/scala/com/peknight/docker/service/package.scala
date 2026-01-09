@@ -9,8 +9,9 @@ import com.peknight.cats.syntax.iorT.rLiftIT
 import com.peknight.docker.Identifier
 import com.peknight.docker.Identifier.{ContainerName, ImageIdentifier, ImageRepositoryTag, NetworkName}
 import com.peknight.docker.client.command.network.create as createNetwork
-import com.peknight.docker.client.command.{inspect, rm, rmi, stop, tag, run as runContainer}
+import com.peknight.docker.client.command.{inspect, pull, rm, rmi, stop, tag, run as runContainer}
 import com.peknight.docker.command.network.create.NetworkCreateOptions
+import com.peknight.docker.command.pull.PullOptions
 import com.peknight.docker.command.remove.{RemoveImageOptions, RemoveOptions}
 import com.peknight.docker.command.run.RunOptions
 import com.peknight.error.Error
@@ -43,6 +44,13 @@ package object service:
     networkCreateOptions: NetworkCreateOptions = NetworkCreateOptions.default): IorT[F, Error, Boolean] =
     ifNotExists[F, NetworkName, Boolean](network) {
       createNetwork[F](network)(networkCreateOptions).use(isSuccess).aeiAsIT.log("Docker#networkCreate", Some(network))
+    }.map(_.getOrElse(true))
+
+  def pullIfNotExists[F[_]: {Sync, Processes, Logger}](image: ImageRepositoryTag)
+                                                      (pullOptions: PullOptions = PullOptions.default)
+  : IorT[F, Error, Boolean] =
+    ifNotExists[F, ImageRepositoryTag, Boolean](image) {
+      pull[F](image)(pullOptions).use(isSuccess).aeiAsIT.log("Docker#pull", Some(image))
     }.map(_.getOrElse(true))
 
   def removeImageIfExists[F[_]: {Sync, Processes, Logger}](image: ImageIdentifier)(

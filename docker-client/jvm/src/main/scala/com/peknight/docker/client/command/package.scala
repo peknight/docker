@@ -3,6 +3,7 @@ package com.peknight.docker.client
 import cats.effect.Resource
 import com.peknight.docker.Identifier.{ContainerIdentifier, ImageIdentifier, ImageRepositoryTag}
 import com.peknight.docker.command.inspect.InspectOptions
+import com.peknight.docker.command.pull.PullOptions
 import com.peknight.docker.command.remove.{RemoveImageOptions, RemoveOptions}
 import com.peknight.docker.command.run.RunOptions
 import com.peknight.docker.command.stop.StopOptions
@@ -14,6 +15,10 @@ package object command:
   : Resource[F, Process[F]] =
     ProcessBuilder(docker, com.peknight.docker.command.inspect.command :: options.options ::: identifier.value :: Nil)
       .spawn[F]
+
+  def pull[F[_]: Processes](image: ImageRepositoryTag)(options: PullOptions = PullOptions.default)
+  : Resource[F, Process[F]] =
+    ProcessBuilder(docker, com.peknight.docker.command.pull.command :: options.options ::: image.value :: Nil).spawn[F]
 
   def rm[F[_] : Processes](head: ContainerIdentifier, tail: ContainerIdentifier*)
                           (options: RemoveOptions = RemoveOptions.default): Resource[F, Process[F]] =
