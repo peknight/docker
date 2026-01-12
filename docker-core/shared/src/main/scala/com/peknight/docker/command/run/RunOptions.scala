@@ -32,6 +32,7 @@ case class RunOptions(
                        ip: Option[IpAddress] = None,
                        name: Option[ContainerName] = None,
                        network: Option[NetworkIdentifier] = None,
+                       publish: List[PortMapping] = Nil,
                        restart: Option[RestartPolicy] = None,
                        volume: List[VolumeMount] = Nil
                      )
@@ -41,6 +42,7 @@ case class RunOptions(
       case "detach" => List(ShortOption('d', argLen = Interval.point(0)))
       case "env" => List(ShortOption('e'))
       case "hostname" => List(ShortOption('h'))
+      case "publish" => List(ShortOption('p'))
       case "volume" => List(ShortOption('v'))
     }
     this.toOptions

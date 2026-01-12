@@ -4,7 +4,8 @@ import cats.syntax.option.*
 import com.comcast.ip4s.*
 import com.peknight.docker.Identifier.{ContainerName, NetworkName}
 import com.peknight.docker.command.network.create.NetworkCreateOptions
-import com.peknight.docker.command.run.{HostToIP, RestartPolicy, RunOptions, VolumeMount}
+import com.peknight.docker.command.run.{HostToIP, PortMapping, RestartPolicy, RunOptions, VolumeMount}
+import com.peknight.network.transport.TransportProtocol
 import com.peknight.os.group.Group.{GroupId, GroupName}
 import fs2.io.file.Path
 import org.scalatest.flatspec.AnyFlatSpec
@@ -20,6 +21,11 @@ class CommandOptionsFlatSpec extends AnyFlatSpec:
       ip = ipv4"172.18.0.2".some,
       name = ContainerName("pek-hostname").some,
       network = NetworkName("pek-network").some,
+      publish = List(
+        PortMapping(port"8080", port"80"),
+        PortMapping(port"8088", port"88", protocol = TransportProtocol.UDP.some),
+        PortMapping(port"8090", port"90", ipv4"192.168.0.1".some, TransportProtocol.TCP.some)
+      ),
       restart = RestartPolicy.always.some,
       volume = List(VolumeMount(Path("/a/b") / Path("c"), Path("/d") / Path("e")))
     ).options)
