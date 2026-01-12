@@ -12,7 +12,6 @@ import com.peknight.docker.Identifier.{ContainerName, ImageRepositoryTag}
 import com.peknight.docker.command.network.create.NetworkCreateOptions
 import com.peknight.docker.command.run.{RestartPolicy, RunOptions, VolumeMount}
 import com.peknight.docker.custom.{backupImage as customBackupImage, container as customContainer, image as customImage, network as customNetwork}
-import com.peknight.docker.custom.{backupImage as customBackupImage, image as customImage}
 import com.peknight.docker.network
 import com.peknight.docker.path.docker
 import com.peknight.docker.service.{createNetworkIfNotExists, pullIfNotExists, removeImageIfExists, renameImageIfExists, run as runContainer}
