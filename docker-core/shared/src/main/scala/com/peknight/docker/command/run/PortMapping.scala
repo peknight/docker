@@ -12,7 +12,7 @@ import com.peknight.network.transport.TransportProtocol
 case class PortMapping(hostPort: Port, containerPort: Port, hostIp: Option[IpAddress] = None, protocol: Option[TransportProtocol] = None):
   override def toString: String = s"${hostIp.map(ip => s"$ip:").getOrElse("")}$hostPort:$containerPort${protocol.map(protocol => s"/${protocol.toString.toLowerCase}").getOrElse("")}"
 end PortMapping
-object PortMapping extends App:
+object PortMapping:
   def fromString(value: String): Option[PortMapping] =
     if value.isBlank || value.startsWith("/") || value.endsWith("/") then None else
       val protocolIndex = value.lastIndexOf("/")
