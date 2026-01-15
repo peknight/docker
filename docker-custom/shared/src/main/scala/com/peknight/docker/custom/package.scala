@@ -7,7 +7,7 @@ import com.peknight.build.gav.peknight.version
 import com.peknight.docker.Identifier.{ContainerName, ImageRepositoryTag, NetworkName}
 import com.peknight.docker.command.run.Permission.ro
 import com.peknight.docker.command.run.VolumeMount
-import com.peknight.fs2.io.file.path.{localtime, timezone}
+import com.peknight.fs2.io.file.path.{etcLocaltime, etcTimezone}
 import com.peknight.ip4s.HostPort
 
 package object custom:
@@ -28,6 +28,6 @@ package object custom:
 
   def hostname(appName: AppName): Hostname = Hostname.fromString(s"pek-$appName").get
 
-  val timezoneVolumeMount: VolumeMount = VolumeMount(timezone, timezone, ro.some)
-  val localtimeVolumeMount: VolumeMount = VolumeMount(localtime, localtime, ro.some)
+  val timezoneVolumeMount: VolumeMount = VolumeMount(etcTimezone, etcTimezone, ro.some)
+  val localtimeVolumeMount: VolumeMount = VolumeMount(etcLocaltime, etcLocaltime, ro.some)
 end custom
