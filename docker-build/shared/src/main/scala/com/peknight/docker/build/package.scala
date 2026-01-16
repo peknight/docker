@@ -27,4 +27,8 @@ package object build:
     // https://hub.docker.com/r/rustdesk/rustdesk-server/tags
     val `rustdesk-server`: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("rustdesk")), "rustdesk-server"), Some(Tag("1.1.14")))
   end rustdesk
+  object v2fly:
+    // https://hub.docker.com/r/v2fly/v2fly-core/tags
+    val `v2fly-core`: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("v2fly")), "v2fly-core"), Some(Tag("v5.41.0")))
+  end v2fly
 end build
