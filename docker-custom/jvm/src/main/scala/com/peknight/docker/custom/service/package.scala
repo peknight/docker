@@ -3,7 +3,6 @@ package com.peknight.docker.custom
 import cats.Monad
 import cats.data.IorT
 import cats.effect.Sync
-import cats.syntax.applicative.*
 import cats.syntax.option.*
 import com.comcast.ip4s.{Cidr, Ipv4Address, ipv4}
 import com.peknight.app.AppName
@@ -23,18 +22,15 @@ import fs2.io.process.Processes
 import org.typelevel.log4cats.Logger
 
 package object service:
-  def runScalaApp[F[_]: {Sync, Files, Processes, Logger}](appName: AppName)(env: Map[String, String] = Map.empty)
+  def runScalaApp[F[_]: {Sync, Files, Processes, Logger}](appName: AppName, home: Path)(env: Map[String, String] = Map.empty)
   : IorT[F, Error, Boolean] =
-    val appHome: Path = Root / opt / appName.value
-    val logDirectory: Path = varLog / appName.value
+    val appHome: Path = home / opt / appName.value
     val certsDirectory: Path = appHome / certs
     val logsDirectory: Path = appHome / logs
     type G[X] = IorT[F, Error, X]
     for
-      _ <- Files[F].createDirectories(logDirectory).asIT
       _ <- Files[F].createDirectories(certsDirectory).asIT
-      _ <- Monad[F].ifM[Unit](Files[F].exists(logsDirectory))(().pure[F],
-        Files[F].createSymbolicLink(logsDirectory, logDirectory)).asIT
+      _ <- Files[F].createDirectories(logsDirectory).asIT
       image = customImage(appName)
       backupImage = customBackupImage(appName)
       container = customContainer(appName)
@@ -44,8 +40,8 @@ package object service:
         volume = List(
           timezoneVolumeMount,
           localtimeVolumeMount,
-          VolumeMount(logDirectory, docker / logs),
-          VolumeMount(certsDirectory, docker / certs)
+          VolumeMount(certsDirectory, docker / certs),
+          VolumeMount(logsDirectory, docker / logs)
         ),
         network = network.host.some
       )))(removeImageIfExists[F](backupImage)(), false.rLiftIT)
