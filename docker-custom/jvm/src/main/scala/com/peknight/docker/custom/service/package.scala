@@ -62,11 +62,23 @@ package object service:
     type G[X] = IorT[F, Error, X]
     val container: ContainerName = customContainer(appName)
     Monad[G].ifM[Boolean](pullIfNotExists[F](image)())(
-        Monad[G].ifM[Boolean](createNetwork[F])(
-          runContainer[F](image, container)(runOptions.copy(network = runOptions.network.orElse(customNetwork.some)),
-            command, args),
-          false.rLiftIT
-        ),
+      Monad[G].ifM[Boolean](createNetwork[F])(
+        runContainer[F](image, container)(runOptions.copy(network = runOptions.network.orElse(customNetwork.some)),
+          command, args),
         false.rLiftIT
+      ),
+      false.rLiftIT
+    )
+
+  def runHostApp[F[_]: {Sync, Processes, Logger}](appName: AppName, image: ImageRepositoryTag)
+                                                 (runOptions: RunOptions = RunOptions.default,
+                                                  command: Option[String] = None,
+                                                  args: List[String] = Nil): IorT[F, Error, Boolean] =
+    type G[X] = IorT[F, Error, X]
+    val container: ContainerName = customContainer(appName)
+    Monad[G].ifM[Boolean](pullIfNotExists[F](image)())(
+      runContainer[F](image, container)(runOptions.copy(network = runOptions.network.orElse(network.host.some)),
+        command, args),
+      false.rLiftIT
     )
 end service
