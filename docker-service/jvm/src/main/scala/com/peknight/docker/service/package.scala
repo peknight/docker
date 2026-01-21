@@ -7,13 +7,15 @@ import cats.syntax.option.*
 import com.comcast.ip4s.Hostname
 import com.peknight.cats.syntax.iorT.rLiftIT
 import com.peknight.docker.Identifier
-import com.peknight.docker.Identifier.{ContainerName, ImageIdentifier, ImageRepositoryTag, NetworkName}
+import com.peknight.docker.Identifier.*
 import com.peknight.docker.client.command.network.create as createNetwork
+import com.peknight.docker.client.command.volume.create as createVolume
 import com.peknight.docker.client.command.{inspect, pull, rm, rmi, stop, tag, run as runContainer}
 import com.peknight.docker.command.network.create.NetworkCreateOptions
 import com.peknight.docker.command.pull.PullOptions
 import com.peknight.docker.command.remove.{RemoveImageOptions, RemoveOptions}
 import com.peknight.docker.command.run.RunOptions
+import com.peknight.docker.command.volume.create.VolumeCreateOptions
 import com.peknight.error.Error
 import com.peknight.error.syntax.applicativeError.aeiAsIT
 import com.peknight.logging.syntax.iorT.log
@@ -45,6 +47,12 @@ package object service:
     networkCreateOptions: NetworkCreateOptions = NetworkCreateOptions.default): IorT[F, Error, Boolean] =
     ifNotExists[F, NetworkName, Boolean](network) {
       createNetwork[F](network)(networkCreateOptions).use(isSuccess).aeiAsIT.log("Docker#networkCreate", Some(network))
+    }.map(_.getOrElse(true))
+
+  def createVolumeIfNotExists[F[_]: {Sync, Processes, Logger}](volume: VolumeName)(
+    volumeCreateOptions: VolumeCreateOptions = VolumeCreateOptions.default): IorT[F, Error, Boolean] =
+    ifNotExists[F, VolumeName, Boolean](volume) {
+      createVolume[F](volume)(volumeCreateOptions).use(isSuccess).aeiAsIT.log("Docker#volumeCreate", Some(volume))
     }.map(_.getOrElse(true))
 
   def pullIfNotExists[F[_]: {Sync, Processes, Logger}](image: ImageRepositoryTag)
