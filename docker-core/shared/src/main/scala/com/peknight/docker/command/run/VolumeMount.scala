@@ -10,10 +10,14 @@ import com.peknight.codec.cursor.Cursor
 import com.peknight.codec.error.DecodingFailure
 import com.peknight.codec.fs2.io.instances.path.stringCodecPath
 import com.peknight.codec.sum.StringType
+import com.peknight.docker.Identifier.VolumeIdentifier
 import fs2.io.file.Path
 
 case class VolumeMount(hostPath: Path, containerPath: Path, permission: Option[Permission] = None)
 object VolumeMount:
+  def of(volume: VolumeIdentifier, containerPath: Path, permission: Option[Permission] = None): VolumeMount =
+    VolumeMount(Path(volume.value), containerPath, permission)
+
   given stringCodecVolumeMount[F[_]: Applicative]: Codec[F, String, String, VolumeMount] =
     Codec.applicative[F, String, String, VolumeMount](volumeMount =>
       s"${volumeMount.hostPath}:${volumeMount.containerPath}${volumeMount.permission.map(p => s":$p").getOrElse("")}"
