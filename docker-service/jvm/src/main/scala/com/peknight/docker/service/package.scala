@@ -21,6 +21,7 @@ import com.peknight.os.process.isSuccess
 import fs2.Compiler
 import fs2.io.process.Processes
 import org.typelevel.log4cats.Logger
+import org.typelevel.log4cats.extras.LogLevel
 
 package object service:
 
@@ -50,7 +51,7 @@ package object service:
                                                       (pullOptions: PullOptions = PullOptions.default)
   : IorT[F, Error, Boolean] =
     ifNotExists[F, ImageRepositoryTag, Boolean](image) {
-      pull[F](image)(pullOptions).use(isSuccess).aeiAsIT.log("Docker#pull", Some(image))
+      pull[F](image)(pullOptions).use(isSuccess).aeiAsIT.log("Docker#pull", Some(image), startLevel = Some(LogLevel.Info))
     }.map(_.getOrElse(true))
 
   def removeImageIfExists[F[_]: {Sync, Processes, Logger}](image: ImageIdentifier)(
@@ -76,9 +77,10 @@ package object service:
     for
       _ <- ifExists[F, ContainerName, Unit](container) {
         for
-          _ <- stop[F](container)().use(isSuccess).aeiAsIT.log("Docker#stop", Some(container))
+          _ <- stop[F](container)().use(isSuccess).aeiAsIT
+            .log("Docker#stop", Some(container), startLevel = Some(LogLevel.Info))
           _ <- rm[F](container)(RemoveOptions(force = Some(true))).use(isSuccess).aeiAsIT
-            .log("Docker#remove", Some(container))
+            .log("Docker#remove", Some(container), startLevel = Some(LogLevel.Info))
         yield
           ()
       }
@@ -86,7 +88,7 @@ package object service:
         detach = runOptions.detach.orElse(true.some),
         hostname = runOptions.hostname.orElse(Hostname.fromString(container.value)),
         name = runOptions.name.orElse(container.some),
-      ), command, args).use(isSuccess[F]).aeiAsIT.log("Docker#run", Some(container))
+      ), command, args).use(isSuccess[F]).aeiAsIT.log("Docker#run", Some(container), startLevel = Some(LogLevel.Info))
     yield
       res
 end service

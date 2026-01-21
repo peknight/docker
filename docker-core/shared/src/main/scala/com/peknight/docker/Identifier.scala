@@ -9,6 +9,7 @@ import scala.reflect.ClassTag
 
 sealed trait Identifier:
   def value: String
+  override def toString: String = value
 end Identifier
 object Identifier:
   case class RawIdentifier(value: String) extends Identifier
