@@ -8,20 +8,17 @@ import com.comcast.ip4s.{Cidr, Ipv4Address, ipv4}
 import com.peknight.app.AppName
 import com.peknight.cats.syntax.iorT.rLiftIT
 import com.peknight.docker.Identifier.{ContainerName, ImageRepositoryTag}
-import com.peknight.docker.client.command.build
 import com.peknight.docker.command.build.BuildOptions
 import com.peknight.docker.command.network.create.NetworkCreateOptions
-import com.peknight.docker.command.remove.RemoveImageOptions
 import com.peknight.docker.command.run.{RestartPolicy, RunOptions, VolumeMount}
 import com.peknight.docker.custom.{backupImage as customBackupImage, container as customContainer, image as customImage, network as customNetwork}
 import com.peknight.docker.network
 import com.peknight.docker.path.docker
-import com.peknight.docker.service.{createNetworkIfNotExists, pullIfNotExists, removeImageIfExists, renameImageIfExists, run as runContainer}
+import com.peknight.docker.service.{buildIfNotExists, createNetworkIfNotExists, pullIfNotExists, removeImageIfExists, renameImageIfExists, run as runContainer}
 import com.peknight.error.Error
-import com.peknight.error.syntax.applicativeError.{aeiAsIT, asIT}
+import com.peknight.error.syntax.applicativeError.asIT
 import com.peknight.fs2.io.file.path.*
-import com.peknight.fs2.io.syntax.path.writeFile
-import com.peknight.os.process.isSuccess
+import com.peknight.fs2.io.syntax.path.writeFileIfNotExists
 import fs2.Stream
 import fs2.io.file.{Files, Path}
 import fs2.io.process.Processes
@@ -89,21 +86,13 @@ package object service:
       false.rLiftIT
     )
 
-  def buildImage[F[_]: {Sync, Files, Processes, Logger}](image: ImageRepositoryTag, dockerfile: String,
-                                                         context: Path = com.peknight.fs2.io.file.path.docker)
-                                                        (buildOptions: BuildOptions = BuildOptions.default,
-                                                         removeImageOptions: RemoveImageOptions = RemoveImageOptions.default)
+  def buildImageIfNotExists[F[_]: {Sync, Files, Processes, Logger}](image: ImageRepositoryTag, dockerfile: String,
+                                                                    context: Path = com.peknight.fs2.io.file.path.docker)
+                                                                   (buildOptions: BuildOptions = BuildOptions.default)
   : IorT[F, Error, Boolean] =
-    type G[X] = IorT[F, Error, X]
-    val backupImage: ImageRepositoryTag = backupImageRepositoryTag(image)
     for
-      _ <- renameImageIfExists(image, backupImage)(removeImageOptions)
-      _ <- (context / "Dockerfile").writeFile[F](Stream(dockerfile).covary[F].through(utf8.encode[F])).asIT
-      res <- build[F](context)(buildOptions.copy(tag = buildOptions.tag.getOrElse(image).some)).use(isSuccess).aeiAsIT
-      _ <-
-        if res then removeImageIfExists(backupImage)(removeImageOptions)
-        else renameImageIfExists(backupImage, image)(removeImageOptions)
+      _ <- (context / "Dockerfile").writeFileIfNotExists[F](Stream(dockerfile).covary[F].through(utf8.encode[F])).asIT
+      res <- buildIfNotExists[F](image, context)(buildOptions)
     yield
       res
-
 end service
