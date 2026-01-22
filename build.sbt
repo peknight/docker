@@ -32,6 +32,7 @@ lazy val dockerCore = (crossProject(JVMPlatform, JSPlatform) in file("docker-cor
 lazy val dockerClient = (crossProject(JVMPlatform, JSPlatform) in file("docker-client"))
   .dependsOn(dockerCore)
   .settings(name := "docker-client")
+  .settings(crossDependencies(http4s))
 
 lazy val dockerService = (crossProject(JVMPlatform, JSPlatform) in file("docker-service"))
   .dependsOn(dockerClient)

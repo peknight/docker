@@ -19,8 +19,10 @@ package object custom:
   def repository(appName: AppName): Repository = Repository(Some(registry), Some(namespace), appName.value)
   def image(appName: AppName, tag: Option[Tag] = Some(tag)): ImageRepositoryTag = ImageRepositoryTag(repository(appName), tag)
 
-  def backupTag(version: String = version, identifier: Option[String]): Tag =
-    Tag(s"$version-backup${identifier.filter(_.nonEmpty).fold("")(id => s"-$id")}")
+  def backupTag(version: String = version, identifier: Option[String] = None): Tag =
+    Tag(s"${Option(version).filter(_.nonEmpty).fold("")(ver => s"$ver-")}backup${identifier.filter(_.nonEmpty).fold("")(id => s"-$id")}")
+  def backupImageRepositoryTag(image: ImageRepositoryTag, identifier: Option[String] = None): ImageRepositoryTag =
+    image.copy(tag = backupTag(image.tag.map(_.value).getOrElse(""), identifier).some)
   val backupTag: Tag = backupTag(version, None)
   def backupImage(appName: AppName, tag: Tag = backupTag): ImageRepositoryTag = image(appName, Some(tag))
 
