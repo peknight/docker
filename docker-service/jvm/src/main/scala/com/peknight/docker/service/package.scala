@@ -1,11 +1,12 @@
 package com.peknight.docker
 
-import cats.Monad
 import cats.data.IorT
 import cats.effect.{MonadCancel, Sync}
 import cats.syntax.option.*
+import cats.{Id, Monad}
 import com.comcast.ip4s.Hostname
-import com.peknight.cats.syntax.iorT.rLiftIT
+import com.peknight.cats.syntax.iorT.{iLiftIT, rLiftIT}
+import com.peknight.codec.fs2.io.instances.path.stringCodecPath
 import com.peknight.docker.Identifier
 import com.peknight.docker.Identifier.*
 import com.peknight.docker.client.command.network.create as createNetwork
@@ -15,15 +16,19 @@ import com.peknight.docker.command.build.BuildOptions
 import com.peknight.docker.command.network.create.NetworkCreateOptions
 import com.peknight.docker.command.pull.PullOptions
 import com.peknight.docker.command.remove.{RemoveImageOptions, RemoveOptions}
-import com.peknight.docker.command.run.RunOptions
+import com.peknight.docker.command.run.{RunOptions, VolumeMount}
 import com.peknight.docker.command.volume.create.VolumeCreateOptions
+import com.peknight.docker.path.{configJson, dockerSock, daemonJson as containerDaemonJson}
 import com.peknight.error.Error
 import com.peknight.error.syntax.applicativeError.aeiAsIT
+import com.peknight.error.syntax.either.asErrorIor
+import com.peknight.fs2.io.file.path.{Root, bin, usr}
 import com.peknight.logging.syntax.iorT.log
-import com.peknight.os.process.isSuccess
+import com.peknight.os.group.Group
+import com.peknight.os.process.{isSuccess, value}
 import fs2.Compiler
 import fs2.io.file.Path
-import fs2.io.process.Processes
+import fs2.io.process.{ProcessBuilder, Processes}
 import org.http4s.Uri
 import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.extras.LogLevel
@@ -110,4 +115,24 @@ package object service:
       ), command, args).use(isSuccess[F]).aeiAsIT.log("Docker#run", container.some, startLevel = LogLevel.Info.some)
     yield
       res
+
+  def dockerPath[F[_]: {Sync, Processes}]: IorT[F, Error, Path] =
+    for
+      dockerPathString <- ProcessBuilder("which", com.peknight.docker.docker).spawn[F].use(value(_)).aeiAsIT
+      path <- stringCodecPath[Id].decode(dockerPathString).asErrorIor.iLiftIT
+    yield
+      path
+
+  def dockerSockGroup[F[_]: {Sync, Processes}]: IorT[F, Error, Group] =
+    ProcessBuilder("stat", "-c", "'%g'", dockerSock.toString).spawn[F].use(value(_)).aeiAsIT.map(Group.apply)
+
+  def dockerInDockerVolume[F[_]: {Sync, Processes}](home: Path, containerHome: Path, daemonJson: Path = containerDaemonJson)
+  : IorT[F, Error, List[VolumeMount]] = {
+    dockerPath[F].map { path => List(
+      VolumeMount(path, Root / usr / bin / com.peknight.docker.docker),
+      VolumeMount(dockerSock, dockerSock),
+      VolumeMount(daemonJson, containerDaemonJson),
+      VolumeMount(configJson(home), configJson(containerHome)),
+    )}
+  }
 end service
