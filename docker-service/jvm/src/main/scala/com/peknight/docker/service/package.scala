@@ -1,7 +1,10 @@
 package com.peknight.docker
 
-import cats.data.IorT
+import cats.data.{Ior, IorT}
 import cats.effect.{MonadCancel, Sync}
+import cats.syntax.applicative.*
+import cats.syntax.flatMap.*
+import cats.syntax.functor.*
 import cats.syntax.option.*
 import cats.{Id, Monad}
 import com.comcast.ip4s.Hostname
@@ -123,8 +126,15 @@ package object service:
     yield
       path
 
+  private def dockerSockGroup[F[_]: {Sync, Processes}](formatKey: Char): F[Ior[Error, Group]] =
+    ProcessBuilder("stat", s"-$formatKey", "%g", dockerSock.toString).spawn[F].use(value(_)).map(_.map(Group.apply))
+
   def dockerSockGroup[F[_]: {Sync, Processes}]: IorT[F, Error, Group] =
-    ProcessBuilder("stat", "-c", "'%g'", dockerSock.toString).spawn[F].use(value(_)).aeiAsIT.map(Group.apply)
+    // Linux系的stat用-c BSD系的stat用-f
+    dockerSockGroup[F]('c').flatMap {
+      case left @ Ior.Left(_) => dockerSockGroup[F]('f')
+      case ior => ior.pure[F]
+    }.aeiAsIT
 
   def dockerInDockerVolume[F[_]: {Sync, Processes}](home: Path, containerHome: Path, daemonJson: Path = containerDaemonJson)
   : IorT[F, Error, List[VolumeMount]] = {
