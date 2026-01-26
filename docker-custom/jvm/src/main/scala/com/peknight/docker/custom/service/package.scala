@@ -2,7 +2,7 @@ package com.peknight.docker.custom
 
 import cats.Monad
 import cats.data.IorT
-import cats.effect.Sync
+import cats.effect.{Async, Sync}
 import cats.syntax.option.*
 import com.comcast.ip4s.{Cidr, Ipv4Address, ipv4}
 import com.peknight.app.AppName
@@ -59,10 +59,10 @@ package object service:
     createNetworkIfNotExists[F](customNetwork)(NetworkCreateOptions(
       Cidr[Ipv4Address](ipv4"172.18.0.0", 16).some, ipv4"172.18.0.1".some))
 
-  def runNetworkApp[F[_]: {Sync, Processes, Logger}](appName: AppName, image: ImageRepositoryTag)
-                                                    (runOptions: RunOptions = RunOptions.default,
-                                                     command: Option[String] = None,
-                                                     args: List[String] = Nil): IorT[F, Error, Boolean] =
+  def runNetworkApp[F[_]: {Async, Processes, Logger}](appName: AppName, image: ImageRepositoryTag)
+                                                     (runOptions: RunOptions = RunOptions.default,
+                                                      command: Option[String] = None,
+                                                      args: List[String] = Nil): IorT[F, Error, Boolean] =
     type G[X] = IorT[F, Error, X]
     val container: ContainerName = customContainer(appName)
     Monad[G].ifM[Boolean](pullIfNotExists[F](image)())(
@@ -74,10 +74,10 @@ package object service:
       false.rLiftIT
     )
 
-  def runHostApp[F[_]: {Sync, Processes, Logger}](appName: AppName, image: ImageRepositoryTag)
-                                                 (runOptions: RunOptions = RunOptions.default,
-                                                  command: Option[String] = None,
-                                                  args: List[String] = Nil): IorT[F, Error, Boolean] =
+  def runHostApp[F[_]: {Async, Processes, Logger}](appName: AppName, image: ImageRepositoryTag)
+                                                  (runOptions: RunOptions = RunOptions.default,
+                                                   command: Option[String] = None,
+                                                   args: List[String] = Nil): IorT[F, Error, Boolean] =
     type G[X] = IorT[F, Error, X]
     val container: ContainerName = customContainer(appName)
     Monad[G].ifM[Boolean](pullIfNotExists[F](image)())(
@@ -86,9 +86,9 @@ package object service:
       false.rLiftIT
     )
 
-  def buildImageIfNotExists[F[_]: {Sync, Files, Processes, Logger}](image: ImageRepositoryTag, dockerfile: String,
-                                                                    context: Path = com.peknight.fs2.io.file.path.docker)
-                                                                   (buildOptions: BuildOptions = BuildOptions.default)
+  def buildImageIfNotExists[F[_]: {Async, Files, Processes, Logger}](image: ImageRepositoryTag, dockerfile: String,
+                                                                     context: Path = com.peknight.fs2.io.file.path.docker)
+                                                                    (buildOptions: BuildOptions = BuildOptions.default)
   : IorT[F, Error, Boolean] =
     for
       _ <- (context / "Dockerfile").writeFileIfNotExists[F](Stream(dockerfile).covary[F].through(utf8.encode[F])).asIT

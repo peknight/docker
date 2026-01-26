@@ -1,7 +1,7 @@
 package com.peknight.docker
 
 import cats.data.{Ior, IorT}
-import cats.effect.{MonadCancel, Sync}
+import cats.effect.{Async, MonadCancel, Sync}
 import cats.syntax.applicative.*
 import cats.syntax.flatMap.*
 import cats.syntax.functor.*
@@ -28,6 +28,7 @@ import com.peknight.error.syntax.either.asErrorIor
 import com.peknight.fs2.io.file.path.{Root, bin, usr}
 import com.peknight.logging.syntax.iorT.log
 import com.peknight.os.group.Group
+import com.peknight.os.process.std.isSuccess as isSuccessStd
 import com.peknight.os.process.{isSuccess, value}
 import fs2.Compiler
 import fs2.io.file.Path
@@ -54,11 +55,11 @@ package object service:
     type G[X] = IorT[F, Error, X]
     Monad[G].ifM[Option[A]](exists[F](identifier))(none[A].rLiftIT, iorT.map(_.some))
 
-  def buildIfNotExists[F[_]: {Sync, Processes, Logger}](image: ImageRepositoryTag, context: Path | Uri)
-                                                       (buildOptions: BuildOptions = BuildOptions.default)
+  def buildIfNotExists[F[_]: {Async, Processes, Logger}](image: ImageRepositoryTag, context: Path | Uri)
+                                                        (buildOptions: BuildOptions = BuildOptions.default)
   : IorT[F, Error, Boolean] =
     ifNotExists[F, ImageRepositoryTag, Boolean](image)(build[F](context)(buildOptions.copy(tag = image.some))
-      .use(isSuccess).aeiAsIT.log("Docker#build", image.some, startLevel = LogLevel.Info.some)
+      .use(isSuccessStd).aeiAsIT.log("Docker#build", image.some, startLevel = LogLevel.Info.some)
     ).map(_.getOrElse(true))
 
 
@@ -74,11 +75,11 @@ package object service:
       createVolume[F](volume)(volumeCreateOptions).use(isSuccess).aeiAsIT.log("Docker#volumeCreate", volume.some)
     }.map(_.getOrElse(true))
 
-  def pullIfNotExists[F[_]: {Sync, Processes, Logger}](image: ImageRepositoryTag)
-                                                      (pullOptions: PullOptions = PullOptions.default)
+  def pullIfNotExists[F[_]: {Async, Processes, Logger}](image: ImageRepositoryTag)
+                                                       (pullOptions: PullOptions = PullOptions.default)
   : IorT[F, Error, Boolean] =
     ifNotExists[F, ImageRepositoryTag, Boolean](image) {
-      pull[F](image)(pullOptions).use(isSuccess).aeiAsIT.log("Docker#pull", image.some, startLevel = LogLevel.Info.some)
+      pull[F](image)(pullOptions).use(isSuccessStd).aeiAsIT.log("Docker#pull", image.some, startLevel = LogLevel.Info.some)
     }.map(_.getOrElse(true))
 
   def removeImageIfExists[F[_]: {Sync, Processes, Logger}](image: ImageIdentifier)(
