@@ -17,7 +17,7 @@ package object build:
   end gitea
   object jenkins:
     // https://hub.docker.com/r/jenkins/jenkins/tags
-    val jenkins: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("jenkins")), "jenkins"), Some(Tag("2.547-jdk25")))
+    val jenkins: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("jenkins")), "jenkins"), Some(Tag("2.548-jdk25")))
   end jenkins
   object sonatype:
     // https://hub.docker.com/r/sonatype/nexus3/tags
