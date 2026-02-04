@@ -1,7 +1,7 @@
 package com.peknight.docker
 
 import cats.syntax.option.*
-import com.comcast.ip4s.{Hostname, host}
+import com.comcast.ip4s.{Hostname, Ipv4Address, host, ipv4}
 import com.peknight.app.AppName
 import com.peknight.build.gav.peknight.version
 import com.peknight.docker.Identifier.{ContainerName, ImageRepositoryTag, NetworkName}
@@ -15,6 +15,8 @@ package object custom:
   val namespace: Namespace = Namespace("peknight")
   val tag: Tag = Tag(version)
   val network: NetworkName = NetworkName("pek-network")
+  val maintainer: String = "MAINTAINER peknight <JKpeknight@gmail.com>"
+  val gateway: Ipv4Address = ipv4"172.18.0.1"
 
   def repository(appName: AppName): Repository = Repository(Some(registry), Some(namespace), appName.value)
   def image(appName: AppName, tag: Option[Tag] = Some(tag)): ImageRepositoryTag = ImageRepositoryTag(repository(appName), tag)

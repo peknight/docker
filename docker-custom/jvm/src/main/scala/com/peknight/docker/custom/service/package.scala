@@ -57,7 +57,7 @@ package object service:
 
   def createNetwork[F[_]: {Sync, Processes, Logger}]: IorT[F, Error, Boolean] =
     createNetworkIfNotExists[F](customNetwork)(NetworkCreateOptions(
-      Cidr[Ipv4Address](ipv4"172.18.0.0", 16).some, ipv4"172.18.0.1".some))
+      Cidr[Ipv4Address](ipv4"172.18.0.0", 16).some, gateway.some))
 
   def runNetworkApp[F[_]: {Async, Processes, Logger}](appName: AppName, image: ImageRepositoryTag)
                                                      (runOptions: RunOptions = RunOptions.default,
