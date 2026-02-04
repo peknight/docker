@@ -6,6 +6,8 @@ package object build:
   object library:
     // https://hub.docker.com/_/postgres/tags
     val postgres: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "postgres"), Some(Tag("18.1-alpine")))
+    // https://hub.docker.com/_/alpine/tags
+    val alpine: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "alpine"), Some(Tag("3.23.3")))
   end library
   object alpine:
     // https://hub.docker.com/r/alpine/psql/tags
@@ -17,11 +19,11 @@ package object build:
   end gitea
   object jenkins:
     // https://hub.docker.com/r/jenkins/jenkins/tags
-    val jenkins: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("jenkins")), "jenkins"), Some(Tag("2.548-jdk25")))
+    val jenkins: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("jenkins")), "jenkins"), Some(Tag("2.549-jdk25")))
   end jenkins
   object sonatype:
     // https://hub.docker.com/r/sonatype/nexus3/tags
-    val nexus3: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("sonatype")), "nexus3"), Some(Tag("3.87.2-alpine")))
+    val nexus3: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("sonatype")), "nexus3"), Some(Tag("3.89.0-alpine")))
   end sonatype
   object rustdesk:
     // https://hub.docker.com/r/rustdesk/rustdesk-server/tags
