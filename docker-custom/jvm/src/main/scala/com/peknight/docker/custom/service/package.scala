@@ -28,7 +28,7 @@ import org.typelevel.log4cats.Logger
 package object service:
   def runScalaApp[F[_]: {Sync, Files, Processes, Logger}](appName: AppName, home: Path, mountTimezone: Boolean = true)(env: Map[String, String] = Map.empty)
   : IorT[F, Error, Boolean] =
-    val appHome: Path = home / opt / appName.value
+    val appHome: Path = home / `.local` / opt / appName.value
     val certsDirectory: Path = appHome / certs
     val logsDirectory: Path = appHome / logs
     type G[X] = IorT[F, Error, X]
