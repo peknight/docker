@@ -26,7 +26,7 @@ import fs2.text.utf8
 import org.typelevel.log4cats.Logger
 
 package object service:
-  def runScalaApp[F[_]: {Sync, Files, Processes, Logger}](appName: AppName, home: Path)(env: Map[String, String] = Map.empty)
+  def runScalaApp[F[_]: {Sync, Files, Processes, Logger}](appName: AppName, home: Path, mountTimezone: Boolean = true)(env: Map[String, String] = Map.empty)
   : IorT[F, Error, Boolean] =
     val appHome: Path = home / opt / appName.value
     val certsDirectory: Path = appHome / certs
@@ -38,15 +38,12 @@ package object service:
       image = customImage(appName)
       backupImage = customBackupImage(appName)
       container = customContainer(appName)
+      volume = List(localtimeVolumeMount, VolumeMount(certsDirectory, docker / certs),
+        VolumeMount(logsDirectory, docker / logs))
       res <- Monad[G].ifM[Boolean](runContainer[F](image, container)(RunOptions(
         restart = RestartPolicy.`unless-stopped`.some,
         env = env,
-        volume = List(
-          timezoneVolumeMount,
-          localtimeVolumeMount,
-          VolumeMount(certsDirectory, docker / certs),
-          VolumeMount(logsDirectory, docker / logs)
-        ),
+        volume = if mountTimezone then timezoneVolumeMount :: volume else volume,
         network = network.host.some
       )))(removeImageIfExists[F](backupImage)(), false.rLiftIT)
     yield
