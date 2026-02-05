@@ -22,9 +22,9 @@ class CommandOptionsFlatSpec extends AnyFlatSpec:
       name = ContainerName("pek-hostname").some,
       network = NetworkName("pek-network").some,
       publish = List(
-        PortMapping(port"8080", port"80"),
-        PortMapping(port"8088", port"88", protocol = TransportProtocol.UDP.some),
-        PortMapping(port"8090", port"90", ipv4"192.168.0.1".some, TransportProtocol.TCP.some)
+        PortMapping.fromPort(port"8080", port"80"),
+        PortMapping.fromPort(port"8088", port"88", protocol = TransportProtocol.UDP.some),
+        PortMapping.fromPort(port"8090", port"90", ipv4"192.168.0.1".some, TransportProtocol.TCP.some)
       ),
       restart = RestartPolicy.always.some,
       volume = List(VolumeMount(Path("/a/b") / Path("c"), Path("/d") / Path("e")))
