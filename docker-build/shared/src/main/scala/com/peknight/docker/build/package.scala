@@ -4,10 +4,14 @@ import com.peknight.docker.Identifier.ImageRepositoryTag
 
 package object build:
   object library:
-    // https://hub.docker.com/_/postgres/tags
-    val postgres: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "postgres"), Some(Tag("18.1-alpine")))
     // https://hub.docker.com/_/alpine/tags
     val alpine: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "alpine"), Some(Tag("3.23.3")))
+    // https://hub.docker.com/_/postgres/tags
+    val postgres: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "postgres"), Some(Tag("18.1-alpine")))
+    // https://hub.docker.com/_/mysql/tags
+    val mysql: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "mysql"), Some(Tag("9.6.0")))
+    // https://hub.docker.com/_/redis/tags
+    val redis: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "redis"), Some(Tag("8.4.0-alpine")))
   end library
   object alpine:
     // https://hub.docker.com/r/alpine/psql/tags
@@ -33,4 +37,8 @@ package object build:
     // https://hub.docker.com/r/v2fly/v2fly-core/tags
     val `v2fly-core`: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("v2fly")), "v2fly-core"), Some(Tag("v5.41.0")))
   end v2fly
+  object xuxueli:
+    // https://hub.docker.com/r/xuxueli/xxl-job-admin/tags
+    val `xxl-job-admin`: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("xuxueli")), "xxl-job-admin"), Some(Tag("3.3.2")))
+  end xuxueli
 end build
