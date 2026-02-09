@@ -34,6 +34,7 @@ case class RunOptions(
                        network: Option[NetworkIdentifier] = None,
                        publish: List[PortMapping] = Nil,
                        restart: Option[RestartPolicy] = None,
+                       user: Option[UserGroup] = None,
                        volume: List[VolumeMount] = Nil
                      )
   extends DockerOptions:
@@ -43,6 +44,7 @@ case class RunOptions(
       case "env" => List(ShortOption('e'))
       case "hostname" => List(ShortOption('h'))
       case "publish" => List(ShortOption('p'))
+      case "user" => List(ShortOption('u'))
       case "volume" => List(ShortOption('v'))
     }
     this.toOptions
