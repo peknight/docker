@@ -11,11 +11,11 @@ package object build:
     // https://hub.docker.com/_/ubuntu/tags
     val ubuntu: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "ubuntu"), Some(Tag("26.04")))
     // https://hub.docker.com/_/postgres/tags
-    val postgres: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "postgres"), Some(Tag("18.1-alpine")))
+    val postgres: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "postgres"), Some(Tag("18.2-alpine")))
     // https://hub.docker.com/_/mysql/tags
     val mysql: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "mysql"), Some(Tag("9.6.0")))
     // https://hub.docker.com/_/redis/tags
-    val redis: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "redis"), Some(Tag("8.4.0-alpine")))
+    val redis: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "redis"), Some(Tag("8.4.1-alpine")))
   end library
   object alpine:
     // https://hub.docker.com/r/alpine/psql/tags
@@ -27,11 +27,11 @@ package object build:
   end gitea
   object jenkins:
     // https://hub.docker.com/r/jenkins/jenkins/tags
-    val jenkins: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("jenkins")), "jenkins"), Some(Tag("2.549-jdk25")))
+    val jenkins: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("jenkins")), "jenkins"), Some(Tag("2.550-jdk25")))
   end jenkins
   object sonatype:
     // https://hub.docker.com/r/sonatype/nexus3/tags
-    val nexus3: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("sonatype")), "nexus3"), Some(Tag("3.89.0-alpine")))
+    val nexus3: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("sonatype")), "nexus3"), Some(Tag("3.89.1-alpine")))
   end sonatype
   object rustdesk:
     // https://hub.docker.com/r/rustdesk/rustdesk-server/tags
