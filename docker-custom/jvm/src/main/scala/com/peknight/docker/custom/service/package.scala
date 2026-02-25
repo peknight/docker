@@ -18,7 +18,7 @@ import com.peknight.docker.service.{buildIfNotExists, createNetworkIfNotExists, 
 import com.peknight.error.Error
 import com.peknight.error.syntax.applicativeError.asIT
 import com.peknight.fs2.io.file.path.*
-import com.peknight.fs2.io.syntax.path.writeStringIfNotExists
+import com.peknight.fs2.io.syntax.path.writeString
 import fs2.io.file.{Files, Path}
 import fs2.io.process.Processes
 import org.typelevel.log4cats.Logger
@@ -86,7 +86,7 @@ package object service:
                                                                     (buildOptions: BuildOptions = BuildOptions.default)
   : IorT[F, Error, Boolean] =
     for
-      _ <- (context / "Dockerfile").writeStringIfNotExists[F](dockerfile).asIT
+      _ <- (context / "Dockerfile").writeString[F](dockerfile).asIT
       res <- buildIfNotExists[F](image, context)(buildOptions)
     yield
       res
