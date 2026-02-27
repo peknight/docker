@@ -1,6 +1,8 @@
 package com.peknight.docker
 
+import com.comcast.ip4s.host
 import com.peknight.docker.Identifier.ImageRepositoryTag
+import com.peknight.ip4s.HostPort
 
 package object build:
   object library:
@@ -45,4 +47,8 @@ package object build:
     // https://hub.docker.com/r/xuxueli/xxl-job-admin/tags
     val `xxl-job-admin`: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("xuxueli")), "xxl-job-admin"), Some(Tag("3.3.2")))
   end xuxueli
+  object jfrog:
+    // https://releases-docker.jfrog.io/ui/repos/tree/General/docker/jfrog/artifactory-oss/
+    val `artifactory-oss`: ImageRepositoryTag = ImageRepositoryTag(Repository(Some(HostPort(host"releases-docker.jfrog.io")), Some(Namespace("jfrog")), "artifactory-oss"), Some(Tag("7.133.8")))
+  end jfrog
 end build
