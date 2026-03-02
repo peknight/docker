@@ -13,7 +13,7 @@ package object build:
     // https://hub.docker.com/_/ubuntu/tags
     val ubuntu: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "ubuntu"), Some(Tag("26.04")))
     // https://hub.docker.com/_/postgres/tags
-    val postgres: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "postgres"), Some(Tag("18.2-alpine3.23")))
+    val postgres: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "postgres"), Some(Tag("18.3-alpine3.23")))
     // https://hub.docker.com/_/mysql/tags
     val mysql: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "mysql"), Some(Tag("9.6.0")))
     // https://hub.docker.com/_/redis/tags
