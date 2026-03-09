@@ -31,7 +31,7 @@ package object build:
   end jenkins
   object sonatype:
     // https://hub.docker.com/r/sonatype/nexus3/tags
-    val nexus3: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("sonatype")), "nexus3"), Some(Tag("3.89.1-alpine")))
+    val nexus3: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("sonatype")), "nexus3"), Some(Tag("3.90.1-alpine")))
   end sonatype
   object rustdesk:
     // https://hub.docker.com/r/rustdesk/rustdesk-server/tags
