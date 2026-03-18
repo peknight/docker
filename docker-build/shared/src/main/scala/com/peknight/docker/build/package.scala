@@ -19,11 +19,11 @@ package object build:
   end library
   object alpine:
     // https://hub.docker.com/r/alpine/psql/tags
-    val psql: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("alpine")), "psql"), Some(Tag("18.2")))
+    val psql: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("alpine")), "psql"), Some(Tag("18.3")))
   end alpine
   object gitea:
     // https://hub.docker.com/r/gitea/gitea/tags
-    val gitea: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("gitea")), "gitea"), Some(Tag("1.25.4-rootless")))
+    val gitea: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("gitea")), "gitea"), Some(Tag("1.25.5-rootless")))
   end gitea
   object jenkins:
     // https://hub.docker.com/r/jenkins/jenkins/tags
