@@ -24,7 +24,7 @@ package object build:
     val psql: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("alpine")), "psql"), Some(Tag("18.3")))
   end alpine
   object apolloconfig:
-    private val namespace: Namespace = Namespace("apolloconfig")
+    val namespace: Namespace = Namespace("apolloconfig")
     private val tag: Tag = Tag(apolloVersion)
     // https://hub.docker.com/r/apolloconfig/apollo-configservice/tags
     val `apollo-configservice`: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(namespace), "apollo-configservice"), Some(tag))
