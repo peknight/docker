@@ -1,5 +1,7 @@
 package com.peknight.docker
 
+import com.peknight.app.build.apolloconfig.apollo.version as apolloVersion
+import com.peknight.app.build.xuxueli.`xxl-job`.version as xxlJobVersion
 import com.peknight.docker.Identifier.ImageRepositoryTag
 
 package object build:
@@ -21,6 +23,16 @@ package object build:
     // https://hub.docker.com/r/alpine/psql/tags
     val psql: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("alpine")), "psql"), Some(Tag("18.3")))
   end alpine
+  object apolloconfig:
+    private val namespace: Namespace = Namespace("apolloconfig")
+    private val tag: Tag = Tag(apolloVersion)
+    // https://hub.docker.com/r/apolloconfig/apollo-configservice/tags
+    val `apollo-configservice`: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(namespace), "apollo-configservice"), Some(tag))
+    // https://hub.docker.com/r/apolloconfig/apollo-adminservice/tags
+    val `apollo-adminservice`: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(namespace), "apollo-adminservice"), Some(tag))
+    // https://hub.docker.com/r/apolloconfig/apollo-portal/tags
+    val `apollo-portal`: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(namespace), "apollo-portal"), Some(tag))
+  end apolloconfig
   object gitea:
     // https://hub.docker.com/r/gitea/gitea/tags
     val gitea: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("gitea")), "gitea"), Some(Tag("1.25.5-rootless")))
@@ -43,7 +55,7 @@ package object build:
   end v2fly
   object xuxueli:
     // https://hub.docker.com/r/xuxueli/xxl-job-admin/tags
-    val `xxl-job-admin`: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("xuxueli")), "xxl-job-admin"), Some(Tag("3.3.2")))
+    val `xxl-job-admin`: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("xuxueli")), "xxl-job-admin"), Some(Tag(xxlJobVersion)))
   end xuxueli
   // object jfrog:
     // https://releases-docker.jfrog.io/ui/repos/tree/General/docker/jfrog/artifactory-oss/
