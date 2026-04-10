@@ -6,18 +6,20 @@ import com.peknight.docker.Identifier.ImageRepositoryTag
 
 package object build:
   object library:
-    // https://hub.docker.com/_/eclipse-temurin/tags
-    val `eclipse-temurin`: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "eclipse-temurin"), Some(Tag("25.0.2_10-jdk")))
     // https://hub.docker.com/_/alpine/tags
     val alpine: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "alpine"), Some(Tag("3.23.3")))
-    // https://hub.docker.com/_/ubuntu/tags
-    val ubuntu: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "ubuntu"), Some(Tag("26.04")))
-    // https://hub.docker.com/_/postgres/tags
-    val postgres: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "postgres"), Some(Tag("18.3-alpine3.23")))
+    // https://hub.docker.com/_/eclipse-temurin/tags
+    val `eclipse-temurin`: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "eclipse-temurin"), Some(Tag("25.0.2_10-jdk")))
     // https://hub.docker.com/_/mysql/tags
     val mysql: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "mysql"), Some(Tag("9.6.0")))
+    // https://hub.docker.com/_/nginx/tags
+    val nginx: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "nginx"), Some(Tag("1.29.8-alpine3.23")))
+    // https://hub.docker.com/_/postgres/tags
+    val postgres: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "postgres"), Some(Tag("18.3-alpine3.23")))
     // https://hub.docker.com/_/redis/tags
     val redis: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "redis"), Some(Tag("8.6.2-alpine3.23")))
+    // https://hub.docker.com/_/ubuntu/tags
+    val ubuntu: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "ubuntu"), Some(Tag("26.04")))
   end library
   object alpine:
     // https://hub.docker.com/r/alpine/psql/tags
