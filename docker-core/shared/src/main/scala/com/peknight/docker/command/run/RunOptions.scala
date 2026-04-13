@@ -29,21 +29,25 @@ case class RunOptions(
                        env: Map[String, String] = Map.empty,
                        groupAdd: List[Group] = List.empty,
                        hostname: Option[Hostname] = None,
+                       interactive: Option[Boolean] = None,
                        ip: Option[IpAddress] = None,
                        name: Option[ContainerName] = None,
                        network: Option[NetworkIdentifier] = None,
                        publish: List[PortMapping] = Nil,
                        restart: Option[RestartPolicy] = None,
+                       tty: Option[Boolean] = None,
                        user: Option[UserGroup] = None,
                        volume: List[VolumeMount] = Nil
                      )
   extends DockerOptions:
   def options: List[String] =
-    given OptionConfig = OptionConfig.transformObjectKey(flagKeys = List("detach")) {
+    given OptionConfig = OptionConfig.transformObjectKey(flagKeys = List("detach", "interactive", "tty")) {
       case "detach" => List(ShortOption('d', argLen = Interval.point(0)))
       case "env" => List(ShortOption('e'))
       case "hostname" => List(ShortOption('h'))
+      case "interactive" => List(ShortOption('i', argLen = Interval.point(0)))
       case "publish" => List(ShortOption('p'))
+      case "tty" => List(ShortOption('t', argLen = Interval.point(0)))
       case "user" => List(ShortOption('u'))
       case "volume" => List(ShortOption('v'))
     }
