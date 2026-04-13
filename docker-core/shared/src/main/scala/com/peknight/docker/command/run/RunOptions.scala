@@ -8,6 +8,7 @@ import com.comcast.ip4s.{Hostname, IpAddress}
 import com.peknight.codec.config.CodecConfig
 import com.peknight.codec.cursor.Cursor
 import com.peknight.codec.error.DecodingFailure
+import com.peknight.codec.fs2.io.instances.path.given
 import com.peknight.codec.ip4s.instances.host.given
 import com.peknight.codec.sum.*
 import com.peknight.codec.{Codec, Decoder, Encoder}
@@ -21,6 +22,7 @@ import com.peknight.query.option.OptionConfig
 import com.peknight.query.option.OptionKey.ShortOption
 import com.peknight.query.parser.pairParser
 import com.peknight.query.syntax.id.query.toOptions
+import fs2.io.file.Path
 import spire.math.Interval
 
 case class RunOptions(
@@ -38,7 +40,8 @@ case class RunOptions(
                        rm: Option[Boolean] = None,
                        tty: Option[Boolean] = None,
                        user: Option[UserGroup] = None,
-                       volume: List[VolumeMount] = Nil
+                       volume: List[VolumeMount] = Nil,
+                       workdir: Option[Path] = None
                      )
   extends DockerOptions:
   def options: List[String] =
@@ -51,6 +54,7 @@ case class RunOptions(
       case "tty" => List(ShortOption('t', argLen = Interval.point(0)))
       case "user" => List(ShortOption('u'))
       case "volume" => List(ShortOption('v'))
+      case "workdir" => List(ShortOption('w'))
     }
     this.toOptions
 end RunOptions
