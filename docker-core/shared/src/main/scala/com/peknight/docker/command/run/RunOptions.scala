@@ -31,6 +31,7 @@ case class RunOptions(
                        env: Map[String, String] = Map.empty,
                        groupAdd: List[Group] = List.empty,
                        hostname: Option[Hostname] = None,
+                       init: Option[Boolean] = None,
                        interactive: Option[Boolean] = None,
                        ip: Option[IpAddress] = None,
                        name: Option[ContainerName] = None,
@@ -45,7 +46,7 @@ case class RunOptions(
                      )
   extends DockerOptions:
   def options: List[String] =
-    given OptionConfig = OptionConfig.transformObjectKey(flagKeys = List("detach", "interactive", "rm", "tty")) {
+    given OptionConfig = OptionConfig.transformObjectKey(flagKeys = List("detach", "init", "interactive", "rm", "tty")) {
       case "detach" => List(ShortOption('d', argLen = Interval.point(0)))
       case "env" => List(ShortOption('e'))
       case "hostname" => List(ShortOption('h'))

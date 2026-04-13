@@ -1,8 +1,10 @@
 package com.peknight.docker
 
+import com.comcast.ip4s.host
 import com.peknight.app.build.apolloconfig.apollo.version as apolloVersion
 import com.peknight.app.build.xuxueli.`xxl-job`.version as xxlJobVersion
 import com.peknight.docker.Identifier.ImageRepositoryTag
+import com.peknight.ip4s.HostPort
 
 package object build:
   object library:
@@ -47,6 +49,10 @@ package object build:
     // https://hub.docker.com/r/ollama/ollama/tags
     val ollama: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("ollama")), "ollama"), Some(Tag("0.20.3")))
   end ollama
+  object openclaw:
+    // ghcr.io/openclaw/openclaw:2026.4.11
+    val openclaw: ImageRepositoryTag = ImageRepositoryTag(Repository(Some(HostPort(host"ghcr.io")), Some(Namespace("openclaw")), "openclaw"), Some(Tag("2026.4.11")))
+  end openclaw
   object paulgauthier:
     // https://hub.docker.com/r/paulgauthier/aider/tags
     val aider: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("paulgauthier")), "aider"), Some(Tag("v0.86.2")))
