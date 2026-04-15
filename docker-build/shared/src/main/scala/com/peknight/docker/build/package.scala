@@ -11,11 +11,11 @@ package object build:
     // https://hub.docker.com/_/alpine/tags
     val alpine: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "alpine"), Some(Tag("3.23.3")))
     // https://hub.docker.com/_/eclipse-temurin/tags
-    val `eclipse-temurin`: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "eclipse-temurin"), Some(Tag("25.0.2_10-jdk")))
+    val `eclipse-temurin`: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "eclipse-temurin"), Some(Tag("26_35-jdk")))
     // https://hub.docker.com/_/mysql/tags
     val mysql: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "mysql"), Some(Tag("9.6.0")))
     // https://hub.docker.com/_/nginx/tags
-    val nginx: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "nginx"), Some(Tag("1.29.8-alpine3.23")))
+    val nginx: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "nginx"), Some(Tag("1.30.0-alpine3.23")))
     // https://hub.docker.com/_/postgres/tags
     val postgres: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "postgres"), Some(Tag("18.3-alpine3.23")))
     // https://hub.docker.com/_/redis/tags
@@ -43,14 +43,15 @@ package object build:
   end gitea
   object jenkins:
     // https://hub.docker.com/r/jenkins/jenkins/tags
-    val jenkins: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("jenkins")), "jenkins"), Some(Tag("2.558-jdk25")))
+    val jenkins: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("jenkins")), "jenkins"), Some(Tag("2.559-jdk25")))
   end jenkins
   object ollama:
     // https://hub.docker.com/r/ollama/ollama/tags
-    val ollama: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("ollama")), "ollama"), Some(Tag("0.20.3")))
+    val ollama: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("ollama")), "ollama"), Some(Tag("0.20.7")))
   end ollama
   object openclaw:
-    // ghcr.io/openclaw/openclaw:2026.4.11
+    // https://github.com/openclaw/openclaw/pkgs/container/openclaw
+    // ghcr.io/openclaw/openclaw:2026.4.14
     val openclaw: ImageRepositoryTag = ImageRepositoryTag(Repository(Some(HostPort(host"ghcr.io")), Some(Namespace("openclaw")), "openclaw"), Some(Tag("2026.4.11")))
   end openclaw
   object paulgauthier:
