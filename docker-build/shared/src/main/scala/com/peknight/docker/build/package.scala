@@ -9,7 +9,7 @@ import com.peknight.ip4s.HostPort
 package object build:
   object library:
     // https://hub.docker.com/_/alpine/tags
-    val alpine: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "alpine"), Some(Tag("3.23.3")))
+    val alpine: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "alpine"), Some(Tag("3.23.4")))
     // https://hub.docker.com/_/eclipse-temurin/tags
     val `eclipse-temurin`: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "eclipse-temurin"), Some(Tag("26_35-jdk")))
     // https://hub.docker.com/_/mysql/tags
@@ -43,16 +43,15 @@ package object build:
   end gitea
   object jenkins:
     // https://hub.docker.com/r/jenkins/jenkins/tags
-    val jenkins: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("jenkins")), "jenkins"), Some(Tag("2.559-jdk25")))
+    val jenkins: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("jenkins")), "jenkins"), Some(Tag("2.560-jdk25")))
   end jenkins
   object ollama:
     // https://hub.docker.com/r/ollama/ollama/tags
-    val ollama: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("ollama")), "ollama"), Some(Tag("0.20.7")))
+    val ollama: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("ollama")), "ollama"), Some(Tag("0.21.0")))
   end ollama
   object openclaw:
     // https://github.com/openclaw/openclaw/pkgs/container/openclaw
-    // ghcr.io/openclaw/openclaw:2026.4.14
-    val openclaw: ImageRepositoryTag = ImageRepositoryTag(Repository(Some(HostPort(host"ghcr.io")), Some(Namespace("openclaw")), "openclaw"), Some(Tag("2026.4.11")))
+    val openclaw: ImageRepositoryTag = ImageRepositoryTag(Repository(Some(HostPort(host"ghcr.io")), Some(Namespace("openclaw")), "openclaw"), Some(Tag("2026.4.15")))
   end openclaw
   object paulgauthier:
     // https://hub.docker.com/r/paulgauthier/aider/tags
@@ -60,7 +59,7 @@ package object build:
   end paulgauthier
   object sonatype:
     // https://hub.docker.com/r/sonatype/nexus3/tags
-    val nexus3: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("sonatype")), "nexus3"), Some(Tag("3.91.0-alpine")))
+    val nexus3: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("sonatype")), "nexus3"), Some(Tag("3.91.1-alpine")))
   end sonatype
   object rustdesk:
     // https://hub.docker.com/r/rustdesk/rustdesk-server/tags
