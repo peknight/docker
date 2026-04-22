@@ -51,7 +51,7 @@ package object build:
   end ollama
   object openclaw:
     // https://github.com/openclaw/openclaw/pkgs/container/openclaw
-    val openclaw: ImageRepositoryTag = ImageRepositoryTag(Repository(Some(HostPort(host"ghcr.io")), Some(Namespace("openclaw")), "openclaw"), Some(Tag("2026.4.15")))
+    val openclaw: ImageRepositoryTag = ImageRepositoryTag(Repository(Some(HostPort(host"ghcr.io")), Some(Namespace("openclaw")), "openclaw"), Some(Tag("2026.4.20")))
   end openclaw
   object paulgauthier:
     // https://hub.docker.com/r/paulgauthier/aider/tags
