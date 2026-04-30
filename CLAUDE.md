@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with th
 
 ## 项目概述
 
-Docker 相关的通用逻辑功能库。所有 Scala 项目中与 Docker 相关的通用功能都定义在此项目中，作为 `peknight` 单体仓库层级 6（系统与服务）的一部分。
+Docker 相关的通用逻辑功能库。所有 Scala 项目中与 Docker 相关的通用功能都定义在此项目中，属于 `peknight` 单体仓库的 **层级 4 — 系统与服务**。基于 `os` 模块，处理 Docker 相关通用逻辑，维护个人所使用的 Docker 镜像版本号，所有 Docker 依赖收口在此。
 
 ## 模块设计原则
 
