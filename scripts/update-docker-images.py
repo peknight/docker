@@ -125,12 +125,18 @@ def parse_ghcr_url(url: str) -> str | None:
     return None
 
 
+def is_semver_like(version: str) -> bool:
+    """判断版本号是否像语义版本号（至少包含一个点且以数字开头）。"""
+    return bool(re.match(r"^\d", version)) and "." in version
+
+
 def find_latest_simple_version(tags: list[dict], current: str) -> str | None:
     """简单版本号匹配：取最新稳定版。
 
     适用于: alpine, mysql, ubuntu, ollama, rustdesk-server 等
+    只考虑 semver-like 标签（如 3.23.4），过滤掉纯日期标签（如 20260127）。
     """
-    versions = [t["name"] for t in tags if t.get("name")]
+    versions = [t["name"] for t in tags if t.get("name") and is_semver_like(t["name"]) and "-" not in t["name"]]
     if not versions:
         return None
 
@@ -333,7 +339,7 @@ def find_image_name_before_anchor(lines: list[str], anchor_idx: int) -> str | No
 
     在锚点所在行或下方几行内查找 val xxx: ImageRepositoryTag 模式。
     """
-    val_re = re.compile(r"val\s+([`'\w]+)\s*:\s*ImageRepositoryTag")
+    val_re = re.compile(r"val\s+(`[^`]+`|[\w]+)\s*:\s*ImageRepositoryTag")
     for j in range(anchor_idx, min(anchor_idx + 3, len(lines))):
         m = val_re.search(lines[j])
         if m:
