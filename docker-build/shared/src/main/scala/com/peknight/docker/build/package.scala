@@ -8,73 +8,67 @@ import com.peknight.ip4s.HostPort
 
 package object build:
   object library:
-    // https://hub.docker.com/_/alpine/tags
+    /** @versionCheck https://hub.docker.com/v2/repositories/library/alpine/tags */
     val alpine: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "alpine"), Some(Tag("3.23.4")))
-    // https://hub.docker.com/_/eclipse-temurin/tags
+    /** @versionCheck https://hub.docker.com/v2/repositories/library/eclipse-temurin/tags */
     val `eclipse-temurin`: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "eclipse-temurin"), Some(Tag("26_35-jdk")))
-    // https://hub.docker.com/_/mysql/tags
+    /** @versionCheck https://hub.docker.com/v2/repositories/library/mysql/tags */
     val mysql: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "mysql"), Some(Tag("9.6.0")))
-    // https://hub.docker.com/_/nginx/tags
+    /** @versionCheck https://hub.docker.com/v2/repositories/library/nginx/tags */
     val nginx: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "nginx"), Some(Tag("1.30.0-alpine3.23")))
-    // https://hub.docker.com/_/postgres/tags
+    /** @versionCheck https://hub.docker.com/v2/repositories/library/postgres/tags */
     val postgres: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "postgres"), Some(Tag("18.3-alpine3.23")))
-    // https://hub.docker.com/_/redis/tags
+    /** @versionCheck https://hub.docker.com/v2/repositories/library/redis/tags */
     val redis: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "redis"), Some(Tag("8.6.2-alpine3.23")))
-    // https://hub.docker.com/_/ubuntu/tags
+    /** @versionCheck https://hub.docker.com/v2/repositories/library/ubuntu/tags */
     val ubuntu: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "ubuntu"), Some(Tag("26.04")))
   end library
   object alpine:
-    // https://hub.docker.com/r/alpine/psql/tags
+    /** @versionCheck https://hub.docker.com/v2/repositories/alpine/psql/tags */
     val psql: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("alpine")), "psql"), Some(Tag("18.3")))
   end alpine
   object apolloconfig:
     val namespace: Namespace = Namespace("apolloconfig")
     private val tag: Tag = Tag(apolloVersion)
-    // https://hub.docker.com/r/apolloconfig/apollo-configservice/tags
+    // @versionCheck skip (external module reference)
     val `apollo-configservice`: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(namespace), "apollo-configservice"), Some(tag))
-    // https://hub.docker.com/r/apolloconfig/apollo-adminservice/tags
     val `apollo-adminservice`: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(namespace), "apollo-adminservice"), Some(tag))
-    // https://hub.docker.com/r/apolloconfig/apollo-portal/tags
     val `apollo-portal`: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(namespace), "apollo-portal"), Some(tag))
   end apolloconfig
   object gitea:
-    // https://hub.docker.com/r/gitea/gitea/tags
+    /** @versionCheck https://hub.docker.com/v2/repositories/gitea/gitea/tags */
     val gitea: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("gitea")), "gitea"), Some(Tag("1.25.5-rootless")))
   end gitea
   object jenkins:
-    // https://hub.docker.com/r/jenkins/jenkins/tags
+    /** @versionCheck https://hub.docker.com/v2/repositories/jenkins/jenkins/tags */
     val jenkins: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("jenkins")), "jenkins"), Some(Tag("2.561-jdk25")))
   end jenkins
   object ollama:
-    // https://hub.docker.com/r/ollama/ollama/tags
+    /** @versionCheck https://hub.docker.com/v2/repositories/ollama/ollama/tags */
     val ollama: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("ollama")), "ollama"), Some(Tag("0.21.0")))
   end ollama
   object openclaw:
-    // https://github.com/openclaw/openclaw/pkgs/container/openclaw
+    /** @versionCheck https://api.github.com/orgs/openclaw/packages/container/openclaw/versions */
     val openclaw: ImageRepositoryTag = ImageRepositoryTag(Repository(Some(HostPort(host"ghcr.io")), Some(Namespace("openclaw")), "openclaw"), Some(Tag("2026.4.20")))
   end openclaw
   object paulgauthier:
-    // https://hub.docker.com/r/paulgauthier/aider/tags
+    /** @versionCheck https://hub.docker.com/v2/repositories/paulgauthier/aider/tags */
     val aider: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("paulgauthier")), "aider"), Some(Tag("v0.86.2")))
   end paulgauthier
   object sonatype:
-    // https://hub.docker.com/r/sonatype/nexus3/tags
+    /** @versionCheck https://hub.docker.com/v2/repositories/sonatype/nexus3/tags */
     val nexus3: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("sonatype")), "nexus3"), Some(Tag("3.91.1-alpine")))
   end sonatype
   object rustdesk:
-    // https://hub.docker.com/r/rustdesk/rustdesk-server/tags
+    /** @versionCheck https://hub.docker.com/v2/repositories/rustdesk/rustdesk-server/tags */
     val `rustdesk-server`: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("rustdesk")), "rustdesk-server"), Some(Tag("1.1.15")))
   end rustdesk
   object v2fly:
-    // https://hub.docker.com/r/v2fly/v2fly-core/tags
+    /** @versionCheck https://hub.docker.com/v2/repositories/v2fly/v2fly-core/tags */
     val `v2fly-core`: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("v2fly")), "v2fly-core"), Some(Tag("v5.41.0")))
   end v2fly
   object xuxueli:
-    // https://hub.docker.com/r/xuxueli/xxl-job-admin/tags
+    // @versionCheck skip (external module reference)
     val `xxl-job-admin`: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("xuxueli")), "xxl-job-admin"), Some(Tag(xxlJobVersion)))
   end xuxueli
-  // object jfrog:
-    // https://releases-docker.jfrog.io/ui/repos/tree/General/docker/jfrog/artifactory-oss/
-    // releases-docker.jfrog.io/jfrog/artifactory-oss
-  // end jfrog
 end build
