@@ -13,7 +13,7 @@ package object build:
     /** @versionCheck https://hub.docker.com/v2/repositories/library/eclipse-temurin/tags */
     val `eclipse-temurin`: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "eclipse-temurin"), Some(Tag("26_35-jdk")))
     /** @versionCheck https://hub.docker.com/v2/repositories/library/mysql/tags */
-    val mysql: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "mysql"), Some(Tag("9.6.0")))
+    val mysql: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "mysql"), Some(Tag("9.7.0")))
     /** @versionCheck https://hub.docker.com/v2/repositories/library/nginx/tags */
     val nginx: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "nginx"), Some(Tag("1.30.0-alpine3.23")))
     /** @versionCheck https://hub.docker.com/v2/repositories/library/postgres/tags */
@@ -37,19 +37,19 @@ package object build:
   end apolloconfig
   object gitea:
     /** @versionCheck https://hub.docker.com/v2/repositories/gitea/gitea/tags */
-    val gitea: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("gitea")), "gitea"), Some(Tag("1.25.5-rootless")))
+    val gitea: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("gitea")), "gitea"), Some(Tag("1.26.1-rootless")))
   end gitea
   object jenkins:
     /** @versionCheck https://hub.docker.com/v2/repositories/jenkins/jenkins/tags */
-    val jenkins: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("jenkins")), "jenkins"), Some(Tag("2.561-jdk25")))
+    val jenkins: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("jenkins")), "jenkins"), Some(Tag("2.562-jdk25")))
   end jenkins
   object ollama:
     /** @versionCheck https://hub.docker.com/v2/repositories/ollama/ollama/tags */
-    val ollama: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("ollama")), "ollama"), Some(Tag("0.21.0")))
+    val ollama: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("ollama")), "ollama"), Some(Tag("0.22.0")))
   end ollama
   object openclaw:
     /** @versionCheck https://api.github.com/orgs/openclaw/packages/container/openclaw/versions */
-    val openclaw: ImageRepositoryTag = ImageRepositoryTag(Repository(Some(HostPort(host"ghcr.io")), Some(Namespace("openclaw")), "openclaw"), Some(Tag("2026.4.20")))
+    val openclaw: ImageRepositoryTag = ImageRepositoryTag(Repository(Some(HostPort(host"ghcr.io")), Some(Namespace("openclaw")), "openclaw"), Some(Tag("2026.4.27")))
   end openclaw
   object paulgauthier:
     /** @versionCheck https://hub.docker.com/v2/repositories/paulgauthier/aider/tags */
