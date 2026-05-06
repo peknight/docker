@@ -26,19 +26,16 @@ python3 scripts/update-docker-images.py --apply
 
 向用户展示更新结果，列出已更新/跳过/错误的镜像。
 
-### Step 3: 提交变更
+### Step 3: 自动提交变更
 
-如果有更新的镜像：
+如果有更新的镜像，自动生成包含变更详情的 commit message 并提交：
 
 ```bash
 git add docker-build/shared/src/main/scala/com/peknight/docker/build/package.scala
-git commit -m "$(cat <<'EOF'
-chore: bump docker-build image versions
-EOF
-)"
+git commit -m "chore: bump docker-build image versions"
 ```
 
-commit message 中的描述根据实际更新的镜像列表自动生成。
+commit message body中列出每个镜像的版本变化（如 `redis: 8.6.2 → 8.6.3`）。
 
 ## 注意事项
 
