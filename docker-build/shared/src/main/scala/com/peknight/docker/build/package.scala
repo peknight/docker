@@ -45,11 +45,11 @@ package object build:
   end jenkins
   object ollama:
     /** @versionCheck https://hub.docker.com/v2/repositories/ollama/ollama/tags */
-    val ollama: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("ollama")), "ollama"), Some(Tag("0.23.1")))
+    val ollama: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("ollama")), "ollama"), Some(Tag("0.23.2")))
   end ollama
   object openclaw:
     /** @versionCheck https://api.github.com/orgs/openclaw/packages/container/openclaw/versions */
-    val openclaw: ImageRepositoryTag = ImageRepositoryTag(Repository(Some(HostPort(host"ghcr.io")), Some(Namespace("openclaw")), "openclaw"), Some(Tag("2026.5.4")))
+    val openclaw: ImageRepositoryTag = ImageRepositoryTag(Repository(Some(HostPort(host"ghcr.io")), Some(Namespace("openclaw")), "openclaw"), Some(Tag("2026.5.7")))
   end openclaw
   object paulgauthier:
     /** @versionCheck https://hub.docker.com/v2/repositories/paulgauthier/aider/tags */
@@ -57,7 +57,7 @@ package object build:
   end paulgauthier
   object sonatype:
     /** @versionCheck https://hub.docker.com/v2/repositories/sonatype/nexus3/tags */
-    val nexus3: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("sonatype")), "nexus3"), Some(Tag("3.91.1-alpine")))
+    val nexus3: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("sonatype")), "nexus3"), Some(Tag("3.92.0-alpine")))
   end sonatype
   object rustdesk:
     /** @versionCheck https://hub.docker.com/v2/repositories/rustdesk/rustdesk-server/tags */
