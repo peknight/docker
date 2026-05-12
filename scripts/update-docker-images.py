@@ -11,6 +11,16 @@ import re
 import urllib.request
 from pathlib import Path
 
+# 从 ~/.profile_proxy 加载代理配置
+_proxy_file = Path.home() / ".profile_proxy"
+if _proxy_file.exists():
+    for line in _proxy_file.read_text().splitlines():
+        line = line.strip()
+        if line.startswith("export ") and "=" in line:
+            key, _, value = line[len("export "):].partition("=")
+            os.environ.setdefault(key, value.strip())
+    del _proxy_file
+
 # Docker Hub API base
 DOCKER_HUB_API = "https://hub.docker.com/v2/repositories/{path}/tags?page_size=200"
 

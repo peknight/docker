@@ -41,7 +41,7 @@ package object build:
   end gitea
   object jenkins:
     /** @versionCheck https://hub.docker.com/v2/repositories/jenkins/jenkins/tags */
-    val jenkins: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("jenkins")), "jenkins"), Some(Tag("2.563-jdk25")))
+    val jenkins: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("jenkins")), "jenkins"), Some(Tag("2.564-jdk25")))
   end jenkins
   object ollama:
     /** @versionCheck https://hub.docker.com/v2/repositories/ollama/ollama/tags */
