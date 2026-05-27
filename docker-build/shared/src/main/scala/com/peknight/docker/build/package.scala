@@ -15,11 +15,11 @@ package object build:
     /** @versionCheck https://hub.docker.com/v2/repositories/library/mysql/tags */
     val mysql: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "mysql"), Some(Tag("9.7.0")))
     /** @versionCheck https://hub.docker.com/v2/repositories/library/nginx/tags */
-    val nginx: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "nginx"), Some(Tag("1.31.0-alpine3.23")))
+    val nginx: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "nginx"), Some(Tag("1.31.1-alpine3.23")))
     /** @versionCheck https://hub.docker.com/v2/repositories/library/postgres/tags */
     val postgres: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "postgres"), Some(Tag("18.4-alpine3.23")))
     /** @versionCheck https://hub.docker.com/v2/repositories/library/redis/tags */
-    val redis: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "redis"), Some(Tag("8.6.3-alpine3.23")))
+    val redis: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "redis"), Some(Tag("8.8.0-alpine3.23")))
     /** @versionCheck https://hub.docker.com/v2/repositories/library/ubuntu/tags */
     val ubuntu: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "ubuntu"), Some(Tag("26.04")))
   end library
@@ -37,11 +37,11 @@ package object build:
   end apolloconfig
   object gitea:
     /** @versionCheck https://hub.docker.com/v2/repositories/gitea/gitea/tags */
-    val gitea: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("gitea")), "gitea"), Some(Tag("1.26.1-rootless")))
+    val gitea: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("gitea")), "gitea"), Some(Tag("1.26.2-rootless")))
   end gitea
   object jenkins:
     /** @versionCheck https://hub.docker.com/v2/repositories/jenkins/jenkins/tags */
-    val jenkins: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("jenkins")), "jenkins"), Some(Tag("2.565-jdk25")))
+    val jenkins: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("jenkins")), "jenkins"), Some(Tag("2.566-jdk25")))
   end jenkins
   object ollama:
     /** @versionCheck https://hub.docker.com/v2/repositories/ollama/ollama/tags */
