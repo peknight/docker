@@ -41,15 +41,15 @@ package object build:
   end gitea
   object jenkins:
     /** @versionCheck https://hub.docker.com/v2/repositories/jenkins/jenkins/tags */
-    val jenkins: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("jenkins")), "jenkins"), Some(Tag("2.566-jdk25")))
+    val jenkins: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("jenkins")), "jenkins"), Some(Tag("2.567-jdk25")))
   end jenkins
   object ollama:
     /** @versionCheck https://hub.docker.com/v2/repositories/ollama/ollama/tags */
-    val ollama: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("ollama")), "ollama"), Some(Tag("0.24.0")))
+    val ollama: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("ollama")), "ollama"), Some(Tag("0.30.4")))
   end ollama
   object openclaw:
     /** @versionCheck https://api.github.com/orgs/openclaw/packages/container/openclaw/versions */
-    val openclaw: ImageRepositoryTag = ImageRepositoryTag(Repository(Some(HostPort(host"ghcr.io")), Some(Namespace("openclaw")), "openclaw"), Some(Tag("2026.5.18")))
+    val openclaw: ImageRepositoryTag = ImageRepositoryTag(Repository(Some(HostPort(host"ghcr.io")), Some(Namespace("openclaw")), "openclaw"), Some(Tag("2026.6.1")))
   end openclaw
   object paulgauthier:
     /** @versionCheck https://hub.docker.com/v2/repositories/paulgauthier/aider/tags */
@@ -57,7 +57,7 @@ package object build:
   end paulgauthier
   object sonatype:
     /** @versionCheck https://hub.docker.com/v2/repositories/sonatype/nexus3/tags */
-    val nexus3: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("sonatype")), "nexus3"), Some(Tag("3.92.2-alpine")))
+    val nexus3: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("sonatype")), "nexus3"), Some(Tag("3.92.3-alpine")))
   end sonatype
   object rustdesk:
     /** @versionCheck https://hub.docker.com/v2/repositories/rustdesk/rustdesk-server/tags */
@@ -67,6 +67,10 @@ package object build:
     /** @versionCheck https://hub.docker.com/v2/repositories/v2fly/v2fly-core/tags */
     val `v2fly-core`: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("v2fly")), "v2fly-core"), Some(Tag("v5.41.0")))
   end v2fly
+  object vaultwarden:
+    /** @versionCheck https://hub.docker.com/v2/repositories/vaultwarden/server/tags */
+    val server: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("vaultwarden")), "server"), Some(Tag("1.36.0")))
+  end vaultwarden
   object xuxueli:
     // @versionCheck skip (external module reference)
     val `xxl-job-admin`: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("xuxueli")), "xxl-job-admin"), Some(Tag(xxlJobVersion)))
