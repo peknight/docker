@@ -39,6 +39,10 @@ package object build:
     /** @versionCheck https://hub.docker.com/v2/repositories/gitea/gitea/tags */
     val gitea: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("gitea")), "gitea"), Some(Tag("1.26.2-rootless")))
   end gitea
+  object infisical:
+    /** @versionCheck https://hub.docker.com/v2/repositories/infisical/infisical/tags */
+    val infisical: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("infisical")), "infisical"), Some(Tag("v0.160.11")))
+  end infisical
   object jenkins:
     /** @versionCheck https://hub.docker.com/v2/repositories/jenkins/jenkins/tags */
     val jenkins: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("jenkins")), "jenkins"), Some(Tag("2.567-jdk25")))
