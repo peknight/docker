@@ -9,15 +9,15 @@ import com.peknight.ip4s.HostPort
 package object build:
   object library:
     /** @versionCheck https://hub.docker.com/v2/repositories/library/alpine/tags */
-    val alpine: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "alpine"), Some(Tag("3.24.0")))
+    val alpine: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "alpine"), Some(Tag("3.24.1")))
     /** @versionCheck https://hub.docker.com/v2/repositories/library/eclipse-temurin/tags */
     val `eclipse-temurin`: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "eclipse-temurin"), Some(Tag("26_35-jdk")))
     /** @versionCheck https://hub.docker.com/v2/repositories/library/mysql/tags */
-    val mysql: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "mysql"), Some(Tag("9.7.0")))
+    val mysql: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "mysql"), Some(Tag("9.7.1")))
     /** @versionCheck https://hub.docker.com/v2/repositories/library/nginx/tags */
     val nginx: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "nginx"), Some(Tag("1.31.1-alpine3.23")))
     /** @versionCheck https://hub.docker.com/v2/repositories/library/postgres/tags */
-    val postgres: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "postgres"), Some(Tag("18.4-alpine3.23")))
+    val postgres: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "postgres"), Some(Tag("18.4-alpine3.24")))
     /** @versionCheck https://hub.docker.com/v2/repositories/library/redis/tags */
     val redis: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "redis"), Some(Tag("8.8.0-alpine3.23")))
     /** @versionCheck https://hub.docker.com/v2/repositories/library/ubuntu/tags */
@@ -41,19 +41,19 @@ package object build:
   end gitea
   object infisical:
     /** @versionCheck https://hub.docker.com/v2/repositories/infisical/infisical/tags */
-    val infisical: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("infisical")), "infisical"), Some(Tag("v0.160.12")))
+    val infisical: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("infisical")), "infisical"), Some(Tag("v0.161.0")))
   end infisical
   object jenkins:
     /** @versionCheck https://hub.docker.com/v2/repositories/jenkins/jenkins/tags */
-    val jenkins: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("jenkins")), "jenkins"), Some(Tag("2.568-jdk25")))
+    val jenkins: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("jenkins")), "jenkins"), Some(Tag("2.569-jdk25")))
   end jenkins
   object ollama:
     /** @versionCheck https://hub.docker.com/v2/repositories/ollama/ollama/tags */
-    val ollama: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("ollama")), "ollama"), Some(Tag("0.30.7")))
+    val ollama: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("ollama")), "ollama"), Some(Tag("0.30.9")))
   end ollama
   object openclaw:
     /** @versionCheck https://api.github.com/orgs/openclaw/packages/container/openclaw/versions */
-    val openclaw: ImageRepositoryTag = ImageRepositoryTag(Repository(Some(HostPort(host"ghcr.io")), Some(Namespace("openclaw")), "openclaw"), Some(Tag("2026.6.5")))
+    val openclaw: ImageRepositoryTag = ImageRepositoryTag(Repository(Some(HostPort(host"ghcr.io")), Some(Namespace("openclaw")), "openclaw"), Some(Tag("2026.6.8")))
   end openclaw
   object paulgauthier:
     /** @versionCheck https://hub.docker.com/v2/repositories/paulgauthier/aider/tags */
