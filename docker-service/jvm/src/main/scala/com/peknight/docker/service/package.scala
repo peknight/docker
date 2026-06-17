@@ -14,11 +14,12 @@ import com.peknight.docker.Identifier
 import com.peknight.docker.Identifier.*
 import com.peknight.docker.client.command.network.create as createNetwork
 import com.peknight.docker.client.command.volume.create as createVolume
-import com.peknight.docker.client.command.{build, inspect, pull, rm, rmi, stop, tag, run as runContainer}
+import com.peknight.docker.client.command.{build, inspect, pull, restart, rm, rmi, stop, tag, run as runContainer}
 import com.peknight.docker.command.build.BuildOptions
 import com.peknight.docker.command.network.create.NetworkCreateOptions
 import com.peknight.docker.command.pull.PullOptions
 import com.peknight.docker.command.remove.{RemoveImageOptions, RemoveOptions}
+import com.peknight.docker.command.restart.RestartOptions
 import com.peknight.docker.command.run.{RunOptions, VolumeMount}
 import com.peknight.docker.command.volume.create.VolumeCreateOptions
 import com.peknight.docker.path.{configJson, dockerSock, daemonJson as containerDaemonJson}
@@ -119,6 +120,15 @@ package object service:
       ), command, args).use(isSuccess[F]).aeiAsIT.log("Docker#run", container.some, startLevel = LogLevel.Info.some)
     yield
       res
+
+  def restartIfExists[F[_]: {Sync, Processes, Logger}](container: ContainerIdentifier)
+                                                      (restartOptions: RestartOptions = RestartOptions.default)
+  : IorT[F, Error, Boolean] =
+    type G[X] = IorT[F, Error, X]
+    ifExists[F, ContainerIdentifier, Boolean](container)(
+      restart[F](container)(restartOptions).use(isSuccess).aeiAsIT
+        .log("Docker#restart", container.some, startLevel = LogLevel.Info.some)
+    ).map(_.getOrElse(true))
 
   def dockerPath[F[_]: {Sync, Processes}]: IorT[F, Error, Path] =
     for

@@ -6,6 +6,7 @@ import com.peknight.docker.command.build.BuildOptions
 import com.peknight.docker.command.inspect.InspectOptions
 import com.peknight.docker.command.pull.PullOptions
 import com.peknight.docker.command.remove.{RemoveImageOptions, RemoveOptions}
+import com.peknight.docker.command.restart.RestartOptions
 import com.peknight.docker.command.run.RunOptions
 import com.peknight.docker.command.stop.StopOptions
 import com.peknight.docker.{Identifier, docker}
@@ -42,6 +43,12 @@ package object command:
   : Resource[F, Process[F]] =
     ProcessBuilder(docker, com.peknight.docker.command.run.command :: options.options ::: image.value ::
       command.toList ::: args).spawn[F]
+
+  def restart[F[_] : Processes](head: ContainerIdentifier, tail: ContainerIdentifier*)
+                               (options: RestartOptions = RestartOptions.default)
+  : Resource[F, Process[F]] =
+    ProcessBuilder(docker, com.peknight.docker.command.restart.command :: options.options ::: head.value ::
+      tail.toList.map(_.value)).spawn[F]
 
   def stop[F[_]: Processes](head: ContainerIdentifier, tail: ContainerIdentifier*)
                            (options: StopOptions = StopOptions.default)
