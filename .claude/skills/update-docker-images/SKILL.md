@@ -41,7 +41,7 @@ commit message body中列出每个镜像的版本变化（如 `redis: 8.6.2 → 
 
 - 脚本位于 `scripts/update-docker-images.py`，使用纯 Python 标准库，零外部依赖
 - 更新范围：`docker-build/package.scala` 中所有带 `/** @versionCheck ... */` 锚点的镜像
-- 排除 `apolloconfig` 和 `xuxueli` 组（版本号引用自外部模块）
+- 跳过范围：带 `/** @skipVersionCheck ... */` 锚点的镜像（如 apolloconfig、xuxueli 等外部模块引用）
 - GHCR 镜像（如 openclaw）需要设置 `GITHUB_TOKEN` 环境变量
 - 不要手动修改版本号，统一通过脚本执行
 - 更新后验证缩进是否正确保留

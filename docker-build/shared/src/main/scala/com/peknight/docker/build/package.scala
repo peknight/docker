@@ -30,9 +30,11 @@ package object build:
   object apolloconfig:
     val namespace: Namespace = Namespace("apolloconfig")
     private val tag: Tag = Tag(apolloVersion)
-    // @versionCheck skip (external module reference)
+    /** @skipVersionCheck https://hub.docker.com/v2/repositories/apolloconfig/apollo-configservice/tags (external module reference) */
     val `apollo-configservice`: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(namespace), "apollo-configservice"), Some(tag))
+    /** @skipVersionCheck https://hub.docker.com/v2/repositories/apolloconfig/apollo-adminservice/tags (external module reference) */
     val `apollo-adminservice`: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(namespace), "apollo-adminservice"), Some(tag))
+    /** @skipVersionCheck https://hub.docker.com/v2/repositories/apolloconfig/apollo-portal/tags (external module reference) */
     val `apollo-portal`: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(namespace), "apollo-portal"), Some(tag))
   end apolloconfig
   object gitea:
@@ -76,7 +78,7 @@ package object build:
     val server: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("vaultwarden")), "server"), Some(Tag("1.36.0")))
   end vaultwarden
   object xuxueli:
-    // @versionCheck skip (external module reference)
+    /** @skipVersionCheck https://hub.docker.com/v2/repositories/xuxueli/xxl-job-admin/tags (external module reference) */
     val `xxl-job-admin`: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("xuxueli")), "xxl-job-admin"), Some(Tag(xxlJobVersion)))
   end xuxueli
 end build

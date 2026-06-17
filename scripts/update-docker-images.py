@@ -105,8 +105,8 @@ def is_version_newer(current: str, candidate: str) -> bool:
 # @versionCheck URL 正则
 ANCHOR_RE = re.compile(r"/\*\*\s*@versionCheck\s*(https?://[^\s]+)\s*\*/")
 
-# Skip comment regex
-SKIP_RE = re.compile(r"//\s*@versionCheck\s+skip")
+# @skipVersionCheck 正则（URL 后可选附加说明）
+SKIP_RE = re.compile(r"/\*\*\s*@skipVersionCheck\s+(https?://[^\s]+).*\*/")
 
 # Tag value regex: Tag("x.y.z")
 TAG_RE = re.compile(r'(Tag\(")([^"]+)("\))')
@@ -411,8 +411,10 @@ def update_docker_build_scala(repo_root: Path, apply: bool) -> list[dict]:
     i = 0
     while i < len(lines):
         # 检查是否为 skip 标记
-        if SKIP_RE.search(lines[i]):
-            results.append({"name": "(skip)", "status": "skipped", "reason": "external module reference"})
+        skip_match = SKIP_RE.search(lines[i])
+        if skip_match:
+            image_name = find_image_name_before_anchor(lines, i + 1) or "unknown"
+            results.append({"name": image_name, "status": "skipped", "reason": "@skipVersionCheck"})
             i += 1
             continue
 
