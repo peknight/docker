@@ -166,41 +166,81 @@ def find_latest_simple_version(tags: list[dict], current: str) -> str | None:
     return None
 
 
-def find_latest_eclipse_temurin_version(tags: list[dict], current_major: int, current_patch: int) -> str | None:
-    """eclipse-temurin 版本匹配: {major}_{patch}-jdk 格式。
+def parse_temurin_tag(tag_name: str) -> tuple | None:
+    """解析 eclipse-temurin tag，返回版本元组。
 
-    逻辑与 build/scripts/update-deps.py 中的相同：
-    1. 检查是否存在下一大版本号
-    2. 存在 → 更新到最新大版本的最新 patch
-    3. 不存在 → 更新到当前大版本的最新 patch
+    支持两种格式:
+    - 旧格式: {major}_{patch}-jdk 如 26_35-jdk
+    - 新格式: {major}.{minor}.{patch}_{build}-jdk 如 26.0.1_8-jdk
+
+    返回: (major_tuple, build_number, full_version_str)
     """
-    temurin_re = re.compile(r"(\d+)_(\d+)-jdk")
+    # 新格式: 26.0.1_8-jdk
+    new_re = re.compile(r"([\d.]+)_(\d+)-jdk$")
+    m = new_re.match(tag_name)
+    if m:
+        version_part = m.group(1)  # 26.0.1
+        build = int(m.group(2))     # 8
+        return (parse_version_tuple(version_part), build, tag_name)
 
-    next_major = current_major + 1
-    current_best = current_patch
-    next_best = None
+    # 旧格式: 26_35-jdk - 转换为兼容格式 (major, 0, 0)
+    old_re = re.compile(r"(\d+)_(\d+)-jdk$")
+    m = old_re.match(tag_name)
+    if m:
+        major = int(m.group(1))
+        build = int(m.group(2))
+        return ((major, 0, 0), build, tag_name)
+
+    return None
+
+
+def find_latest_eclipse_temurin_version(tags: list[dict], current_version: str) -> str | None:
+    """eclipse-temurin 版本匹配。
+
+    支持两种格式:
+    - 旧格式: {major}_{patch}-jdk 如 26_35-jdk
+    - 新格式: {major}.{minor}.{patch}_{build}-jdk 如 26.0.1_8-jdk
+
+    逻辑:
+    1. 解析当前版本
+    2. 找到所有同主版本号中版本号最高的 tag
+    3. 如果有更新则返回
+    """
+    parsed_current = parse_temurin_tag(current_version + "-jdk")
+    if not parsed_current:
+        return None
+
+    current_ver_tuple, current_build, _ = parsed_current
+    current_major = current_ver_tuple[0]
+
+    best = None
 
     for tag_info in tags:
         tag_name = tag_info.get("name", "")
-        m = temurin_re.match(tag_name)
-        if not m:
+        parsed = parse_temurin_tag(tag_name)
+        if not parsed:
             continue
-        major = int(m.group(1))
-        patch = int(m.group(2))
-        if major == next_major and (next_best is None or patch > next_best):
-            next_best = patch
-        elif major == current_major and patch > int(current_best):
-            current_best = str(patch)
 
-    if next_best is not None:
-        new_version = f"{next_major}_{next_best}"
-        old_version = f"{current_major}_{current_patch}"
-        if new_version != old_version:
-            return new_version
-    else:
-        best_str = str(current_best)
-        if best_str != str(current_patch):
-            return f"{current_major}_{best_str}"
+        ver_tuple, build, full_version = parsed
+
+        # 只考虑相同主版本号（未来可以支持主版本升级）
+        if ver_tuple[0] != current_major:
+            continue
+
+        # 比较版本号：先比较语义版本，再比较 build 号
+        if best is None:
+            best = (ver_tuple, build, full_version)
+        else:
+            best_ver, best_build, _ = best
+            if ver_tuple > best_ver or (ver_tuple == best_ver and build > best_build):
+                best = (ver_tuple, build, full_version)
+
+    if best is None:
+        return None
+
+    best_full_version = best[2]
+    if best_full_version != current_version + "-jdk":
+        return best_full_version
     return None
 
 
@@ -434,12 +474,10 @@ def update_docker_build_scala(repo_root: Path, apply: bool) -> list[dict]:
                 continue
 
             # eclipse-temurin 特殊处理
-            temurin_re = re.compile(r"(\d+)_(\d+)-jdk")
+            temurin_re = re.compile(r"([\d.]+_\d+)-jdk$")
             temurin_m = temurin_re.match(current_version)
             if temurin_m:
-                latest = find_latest_eclipse_temurin_version(
-                    tags, int(temurin_m.group(1)), int(temurin_m.group(2))
-                )
+                latest = find_latest_eclipse_temurin_version(tags, temurin_m.group(1))
             # alpine 复合版本
             elif re.match(r"^[\d.]+-alpine[\d.]+$", current_version):
                 latest = find_latest_alpine_version(tags, current_version)

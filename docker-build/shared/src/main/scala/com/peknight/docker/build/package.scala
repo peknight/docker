@@ -11,7 +11,7 @@ package object build:
     /** @versionCheck https://hub.docker.com/v2/repositories/library/alpine/tags */
     val alpine: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "alpine"), Some(Tag("3.24.1")))
     /** @versionCheck https://hub.docker.com/v2/repositories/library/eclipse-temurin/tags */
-    val `eclipse-temurin`: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "eclipse-temurin"), Some(Tag("26_35-jdk")))
+    val `eclipse-temurin`: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "eclipse-temurin"), Some(Tag("26.0.1_8-jdk")))
     /** @versionCheck https://hub.docker.com/v2/repositories/library/mysql/tags */
     val mysql: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "mysql"), Some(Tag("9.7.1")))
     /** @versionCheck https://hub.docker.com/v2/repositories/library/nginx/tags */
