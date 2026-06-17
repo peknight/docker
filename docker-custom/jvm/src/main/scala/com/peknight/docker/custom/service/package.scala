@@ -14,7 +14,7 @@ import com.peknight.docker.command.run.{RestartPolicy, RunOptions, VolumeMount}
 import com.peknight.docker.custom.{backupImage as customBackupImage, container as customContainer, image as customImage, network as customNetwork}
 import com.peknight.docker.network
 import com.peknight.docker.path.docker
-import com.peknight.docker.service.{buildIfNotExists, createNetworkIfNotExists, pullIfNotExists, removeImageIfExists, renameImageIfExists, run as runContainer}
+import com.peknight.docker.service.{buildIfNotExists, createNetworkIfNotExists, dockerInDockerVolume, dockerSockGroup, pullIfNotExists, removeImageIfExists, renameImageIfExists, run as runContainer}
 import com.peknight.error.Error
 import com.peknight.error.syntax.applicativeError.asIT
 import com.peknight.fs2.io.file.path.*
@@ -24,25 +24,37 @@ import fs2.io.process.Processes
 import org.typelevel.log4cats.Logger
 
 package object service:
-  def runScalaApp[F[_]: {Sync, Files, Processes, Logger}](appName: AppName, home: Path, mountTimezone: Boolean = true)(env: Map[String, String] = Map.empty)
+  def runScalaApp[F[_]: {Sync, Files, Processes, Logger}](appName: AppName, home: Path,
+                                                          certificatesDirectory: Option[Path] = None,
+                                                          containerHome: Option[Path] = None,
+                                                          acme: Boolean = true,
+                                                          host: Boolean = true,
+                                                          mountTimezone: Boolean = true,
+                                                          dockerInDocker: Boolean = false)
+                                                         (runOptions: RunOptions = RunOptions.default)
   : IorT[F, Error, Boolean] =
     val appHome: Path = home / `.local` / opt / appName.value
-    val certsDirectory: Path = appHome / certs
+    val certsDirectory: Path = certificatesDirectory.getOrElse(appHome / certs)
     val logsDirectory: Path = appHome / logs
     type G[X] = IorT[F, Error, X]
     for
-      _ <- Files[F].createDirectories(certsDirectory).asIT
+      _ <- if acme then Files[F].createDirectories(certsDirectory).asIT else ().rLiftIT
       _ <- Files[F].createDirectories(logsDirectory).asIT
+      sockGroups <- if dockerInDocker then dockerSockGroup[F].map(_ :: Nil) else Nil.rLiftIT
+      dockerVolumes <-
+        if dockerInDocker then dockerInDockerVolume[F](home, containerHome.getOrElse(Root / root)) else Nil.rLiftIT
+      certVolumes = if acme then List(VolumeMount(certsDirectory, docker / certs)) else Nil
+      timezoneVolumes = if mountTimezone then List(timezoneVolumeMount) else Nil
       image = customImage(appName)
       backupImage = customBackupImage(appName)
       container = customContainer(appName)
-      volume = List(localtimeVolumeMount, VolumeMount(certsDirectory, docker / certs),
-        VolumeMount(logsDirectory, docker / logs))
-      res <- Monad[G].ifM[Boolean](runContainer[F](image, container)(RunOptions(
-        restart = RestartPolicy.`unless-stopped`.some,
-        env = env,
-        volume = if mountTimezone then timezoneVolumeMount :: volume else volume,
-        network = network.host.some
+      volume = VolumeMount(logsDirectory, docker / logs) :: certVolumes ::: timezoneVolumes ::: localtimeVolumeMount ::
+        dockerVolumes ::: runOptions.volume
+      res <- Monad[G].ifM[Boolean](runContainer[F](image, container)(runOptions.copy(
+        groupAdd = sockGroups ::: runOptions.groupAdd,
+        restart = runOptions.restart.getOrElse(RestartPolicy.`unless-stopped`).some,
+        volume = volume,
+        network = runOptions.network.orElse(if host then network.host.some else none)
       )))(removeImageIfExists[F](backupImage)(), false.rLiftIT)
     yield
       res
