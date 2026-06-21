@@ -41,6 +41,10 @@ package object build:
     /** @versionCheck https://hub.docker.com/v2/repositories/gitea/gitea/tags */
     val gitea: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("gitea")), "gitea"), Some(Tag("1.26.2-rootless")))
   end gitea
+  object goauthentik:
+    /** @versionCheck https://github.com/goauthentik/authentik/releases */
+    val server: ImageRepositoryTag = ImageRepositoryTag(Repository(Some(HostPort(host"ghcr.io")), Some(Namespace("goauthentik")), "server"), Some(Tag("2026.5.3")))
+  end goauthentik
   object infisical:
     /** @versionCheck https://hub.docker.com/v2/repositories/infisical/infisical/tags */
     val infisical: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("infisical")), "infisical"), Some(Tag("v0.161.0")))

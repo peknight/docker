@@ -24,6 +24,9 @@ import com.peknight.query.parser.pairParser
 import com.peknight.query.syntax.id.query.toOptions
 import fs2.io.file.Path
 import spire.math.Interval
+import squants.information.{Bytes, Information}
+
+import scala.util.Try
 
 case class RunOptions(
                        addHost: List[HostToIP] = List.empty,
@@ -39,6 +42,7 @@ case class RunOptions(
                        publish: List[PortMapping] = Nil,
                        restart: Option[RestartPolicy] = None,
                        rm: Option[Boolean] = None,
+                       shmSize: Option[Information] = None,
                        tty: Option[Boolean] = None,
                        user: Option[UserGroup] = None,
                        volume: List[VolumeMount] = Nil,
@@ -68,6 +72,12 @@ object RunOptions:
     given Codec[F, S, Cursor[S], Boolean] = Codec.applicative[F, S, Cursor[S], Boolean](
       flag => if flag then BooleanType[S].to(true) else NullType[S].unit
     )(Decoder.decodeBooleanBS[Id, S].decode)
+    // docker --shm-size 接受 "<bytes>b"/"512m" 等形式，不接受 squants 规范串 "512.0 MB"，故统一渲染为字节
+    given stringCodecInformation: Codec[F, String, String, Information] =
+      Codec.mapTry[F, String, String, Information](info => s"${info.toBytes.toLong}b") { s =>
+        Information.parseString(s).recoverWith(_ => Try(Bytes(s.takeWhile(_.isDigit).toLong)))
+      }
+    given Codec[F, S, Cursor[S], Information] = Codec.codecS[F, S, Information]
     given Codec[F, S, Cursor[S], Map[String, String]] = {
       Codec.instance[F, S, Cursor[S], Map[String, String]] { map =>
         ArrayType[S].to(map.map { case (k, v) => StringType[S].to(s"$k=$v") }.toVector).pure[F]

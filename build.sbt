@@ -27,6 +27,7 @@ lazy val dockerCore = (crossProject(JVMPlatform, JSPlatform) in file("docker-cor
     peknight.query,
     peknight.codec.ip4s,
     peknight.codec.fs2.io,
+    peknight.codec.squants,
   ))
   .settings(crossTestDependencies(scalaTest))
 
