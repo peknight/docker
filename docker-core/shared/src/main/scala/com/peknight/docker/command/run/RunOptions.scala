@@ -4,7 +4,7 @@ import cats.syntax.applicative.*
 import cats.syntax.eq.*
 import cats.syntax.functor.*
 import cats.syntax.traverse.*
-import cats.{Eq, Id, Monad, Show}
+import cats.{Id, Monad, Show}
 import com.comcast.ip4s.{Hostname, IpAddress}
 import com.peknight.codec.config.CodecConfig
 import com.peknight.codec.cursor.Cursor
@@ -74,7 +74,7 @@ object RunOptions:
       flag => if flag then BooleanType[S].to(true) else NullType[S].unit
     )(Decoder.decodeBooleanBS[Id, S].decode)
     import squants.information.InformationConversions.*
-    given Eq[Information] = com.peknight.squants.instances.InformationInstances.eqInformation
+    import com.peknight.squants.instances.information.given
 
     // docker --shm-size 格式: <number><unit>，unit 可选 b/k/m/g，省略 unit 则为 bytes
     def encodeDockerShmSize(info: Information): String =
