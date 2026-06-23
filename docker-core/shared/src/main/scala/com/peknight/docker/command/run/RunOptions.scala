@@ -24,7 +24,7 @@ import com.peknight.query.parser.pairParser
 import com.peknight.query.syntax.id.query.toOptions
 import fs2.io.file.Path
 import spire.math.Interval
-import squants.information.{Bytes, Information}
+import squants.information.Information
 
 import scala.util.Try
 
@@ -72,11 +72,26 @@ object RunOptions:
     given Codec[F, S, Cursor[S], Boolean] = Codec.applicative[F, S, Cursor[S], Boolean](
       flag => if flag then BooleanType[S].to(true) else NullType[S].unit
     )(Decoder.decodeBooleanBS[Id, S].decode)
-    // docker --shm-size 接受 "<bytes>b"/"512m" 等形式，不接受 squants 规范串 "512.0 MB"，故统一渲染为字节
+    // docker --shm-size 格式: <number><unit>，unit 可选 b/k/m/g，省略 unit 则为 bytes
+    def encodeDockerShmSize(info: Information): String =
+      if info >= 1.gigabytes && info.toGigabytes.toLong * 1.gigabytes == info then
+        s"${info.toGigabytes.toLong}g"
+      else if info >= 1.megabytes && info.toMegabytes.toLong * 1.megabytes == info then
+        s"${info.toMegabytes.toLong}m"
+      else if info >= 1.kilobytes && info.toKilobytes.toLong * 1.kilobytes == info then
+        s"${info.toKilobytes.toLong}k"
+      else
+        s"${info.toBytes.toLong}b"
+    def decodeDockerShmSize(s: String): Try[Information] = Try {
+      val digits = s.takeWhile(_.isDigit).toLong
+      s.dropWhile(_.isDigit).toLowerCase match
+        case "g" => digits.gigabytes
+        case "m" => digits.megabytes
+        case "k" => digits.kilobytes
+        case _   => digits.bytes  // "b" 或无 unit → bytes
+    }
     given stringCodecInformation: Codec[F, String, String, Information] =
-      Codec.mapTry[F, String, String, Information](info => s"${info.toBytes.toLong}b") { s =>
-        Information.parseString(s).recoverWith(_ => Try(Bytes(s.takeWhile(_.isDigit).toLong)))
-      }
+      Codec.mapTry[F, String, String, Information](encodeDockerShmSize)(decodeDockerShmSize)
     given Codec[F, S, Cursor[S], Information] = Codec.codecS[F, S, Information]
     given Codec[F, S, Cursor[S], Map[String, String]] = {
       Codec.instance[F, S, Cursor[S], Map[String, String]] { map =>
