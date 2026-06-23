@@ -1,16 +1,20 @@
 package com.peknight.docker.command.run
 
+import cats.parse.*
 import cats.syntax.applicative.*
+import cats.syntax.either.*
 import cats.syntax.eq.*
 import cats.syntax.functor.*
 import cats.syntax.traverse.*
 import cats.{Id, Monad, Show}
 import com.comcast.ip4s.{Hostname, IpAddress}
+import com.peknight.cats.parse.syntax.parser.flatMapS0
 import com.peknight.codec.config.CodecConfig
 import com.peknight.codec.cursor.Cursor
 import com.peknight.codec.error.DecodingFailure
 import com.peknight.codec.fs2.io.instances.path.given
 import com.peknight.codec.ip4s.instances.host.given
+import com.peknight.codec.number.Number
 import com.peknight.codec.sum.*
 import com.peknight.codec.{Codec, Decoder, Encoder}
 import com.peknight.commons.text.cases.KebabCase
@@ -23,11 +27,12 @@ import com.peknight.query.option.OptionConfig
 import com.peknight.query.option.OptionKey.ShortOption
 import com.peknight.query.parser.pairParser
 import com.peknight.query.syntax.id.query.toOptions
+import com.peknight.squants.instances.information.given
 import fs2.io.file.Path
 import spire.math.Interval
-import squants.information.Information
-
-import scala.util.Try
+import squants.UnitOfMeasure
+import squants.information.InformationConversions.*
+import squants.information.{InformationConversions, *}
 
 case class RunOptions(
                        addHost: List[HostToIP] = List.empty,
@@ -67,36 +72,41 @@ end RunOptions
 object RunOptions:
   val default: RunOptions = RunOptions()
 
+  private val shmSizeUnitParser: Parser0[UnitOfMeasure[Information]] =
+    Parser.anyChar.rep0.string.flatMapS0[UnitOfMeasure[Information]] { unit =>
+      if unit.isBlank then Bytes.asRight
+      else unit.toLowerCase match
+        case "b" => Bytes.asRight
+        case "k" => Kilobytes.asRight
+        case "m" => Megabytes.asRight
+        case "g" => Gigabytes.asRight
+        case _ => Information.units
+          .find(unitOfMeasure => unitOfMeasure.symbol.equalsIgnoreCase(unit))
+          .toRight(s"Invalid --shm-size format: $unit")
+    }
+
+  private val shmSizeParser: Parser0[Information] =
+    ((Number.parser <* Parser.charsWhile0(_.isWhitespace)) ~ shmSizeUnitParser)
+      .map((value, unit) => unit(value.toDouble))
+
   given codecRunOptions[F[_]: Monad, S: {ObjectType, NullType, ArrayType, BooleanType, StringType, Show}]
   : Codec[F, S, Cursor[S], RunOptions] =
     given CodecConfig = CodecConfig.default.withTransformMemberName(_.to(KebabCase))
     given Codec[F, S, Cursor[S], Boolean] = Codec.applicative[F, S, Cursor[S], Boolean](
       flag => if flag then BooleanType[S].to(true) else NullType[S].unit
     )(Decoder.decodeBooleanBS[Id, S].decode)
-    import squants.information.InformationConversions.*
-    import com.peknight.squants.instances.information.given
-
     // docker --shm-size 格式: <number><unit>，unit 可选 b/k/m/g，省略 unit 则为 bytes
-    def encodeDockerShmSize(info: Information): String =
-      val bytes = info.toBytes.toLong
-      if info >= 1.gigabytes && info.toGigabytes.toLong.gigabytes === info then
-        s"${info.toGigabytes.toLong}g"
-      else if info >= 1.megabytes && info.toMegabytes.toLong.megabytes === info then
-        s"${info.toMegabytes.toLong}m"
-      else if info >= 1.kilobytes && info.toKilobytes.toLong.kilobytes === info then
-        s"${info.toKilobytes.toLong}k"
-      else
-        s"${bytes}b"
-    def decodeDockerShmSize(s: String): Try[Information] = Try {
-      val digits = s.takeWhile(_.isDigit).toLong
-      s.dropWhile(_.isDigit).toLowerCase match
-        case "g" => digits.gigabytes
-        case "m" => digits.megabytes
-        case "k" => digits.kilobytes
-        case _   => digits.bytes  // "b" 或无 unit → bytes
-    }
     given stringCodecInformation: Codec[F, String, String, Information] =
-      Codec.mapTry[F, String, String, Information](encodeDockerShmSize)(decodeDockerShmSize)
+      Codec.applicative[F, String, String, Information]{ info =>
+        if info >= 1.gigabytes && info.toGigabytes.toLong.gigabytes === info then
+          s"${info.toGigabytes.toLong}g"
+        else if info >= 1.megabytes && info.toMegabytes.toLong.megabytes === info then
+          s"${info.toMegabytes.toLong}m"
+        else if info >= 1.kilobytes && info.toKilobytes.toLong.kilobytes === info then
+          s"${info.toKilobytes.toLong}k"
+        else
+          s"${info.toBytes.toLong}b"
+      } { t => shmSizeParser.parseAll(t).left.map(DecodingFailure.apply) }
     given Codec[F, S, Cursor[S], Information] = Codec.codecS[F, S, Information]
     given Codec[F, S, Cursor[S], Map[String, String]] = {
       Codec.instance[F, S, Cursor[S], Map[String, String]] { map =>
