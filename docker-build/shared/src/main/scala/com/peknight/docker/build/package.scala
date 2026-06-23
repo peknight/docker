@@ -15,13 +15,13 @@ package object build:
     /** @versionCheck https://hub.docker.com/v2/repositories/library/mysql/tags */
     val mysql: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "mysql"), Some(Tag("9.7.1")))
     /** @versionCheck https://hub.docker.com/v2/repositories/library/nginx/tags */
-    val nginx: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "nginx"), Some(Tag("1.31.1-alpine3.23")))
+    val nginx: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "nginx"), Some(Tag("1.31.2-alpine3.23")))
     /** @versionCheck https://hub.docker.com/v2/repositories/library/postgres/tags */
     val postgres: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "postgres"), Some(Tag("18.4-alpine3.24")))
     /** @versionCheck https://hub.docker.com/v2/repositories/library/redis/tags */
     val redis: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "redis"), Some(Tag("8.8.0-alpine3.23")))
     /** @versionCheck https://hub.docker.com/v2/repositories/library/ubuntu/tags */
-    val ubuntu: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "ubuntu"), Some(Tag("26.04")))
+    val ubuntu: ImageRepositoryTag = ImageRepositoryTag(Repository(None, None, "ubuntu"), Some(Tag("26.10")))
   end library
   object alpine:
     /** @versionCheck https://hub.docker.com/v2/repositories/alpine/psql/tags */
@@ -39,15 +39,15 @@ package object build:
   end apolloconfig
   object gitea:
     /** @versionCheck https://hub.docker.com/v2/repositories/gitea/gitea/tags */
-    val gitea: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("gitea")), "gitea"), Some(Tag("1.26.2-rootless")))
+    val gitea: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("gitea")), "gitea"), Some(Tag("1.26.4-rootless")))
   end gitea
   object goauthentik:
-    /** @versionCheck https://github.com/goauthentik/authentik/releases */
+    /** @versionCheck https://api.github.com/orgs/goauthentik/packages/container/server/versions */
     val server: ImageRepositoryTag = ImageRepositoryTag(Repository(Some(HostPort(host"ghcr.io")), Some(Namespace("goauthentik")), "server"), Some(Tag("2026.5.3")))
   end goauthentik
   object infisical:
     /** @versionCheck https://hub.docker.com/v2/repositories/infisical/infisical/tags */
-    val infisical: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("infisical")), "infisical"), Some(Tag("v0.161.0")))
+    val infisical: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("infisical")), "infisical"), Some(Tag("v0.161.5")))
   end infisical
   object jenkins:
     /** @versionCheck https://hub.docker.com/v2/repositories/jenkins/jenkins/tags */
@@ -55,11 +55,11 @@ package object build:
   end jenkins
   object ollama:
     /** @versionCheck https://hub.docker.com/v2/repositories/ollama/ollama/tags */
-    val ollama: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("ollama")), "ollama"), Some(Tag("0.30.9")))
+    val ollama: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("ollama")), "ollama"), Some(Tag("0.30.10")))
   end ollama
   object openclaw:
     /** @versionCheck https://api.github.com/orgs/openclaw/packages/container/openclaw/versions */
-    val openclaw: ImageRepositoryTag = ImageRepositoryTag(Repository(Some(HostPort(host"ghcr.io")), Some(Namespace("openclaw")), "openclaw"), Some(Tag("2026.6.8")))
+    val openclaw: ImageRepositoryTag = ImageRepositoryTag(Repository(Some(HostPort(host"ghcr.io")), Some(Namespace("openclaw")), "openclaw"), Some(Tag("2026.6.9")))
   end openclaw
   object paulgauthier:
     /** @versionCheck https://hub.docker.com/v2/repositories/paulgauthier/aider/tags */
@@ -67,7 +67,7 @@ package object build:
   end paulgauthier
   object sonatype:
     /** @versionCheck https://hub.docker.com/v2/repositories/sonatype/nexus3/tags */
-    val nexus3: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("sonatype")), "nexus3"), Some(Tag("3.93.0-alpine")))
+    val nexus3: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("sonatype")), "nexus3"), Some(Tag("3.93.1-alpine")))
   end sonatype
   object rustdesk:
     /** @versionCheck https://hub.docker.com/v2/repositories/rustdesk/rustdesk-server/tags */
