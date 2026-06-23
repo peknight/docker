@@ -1,9 +1,10 @@
 package com.peknight.docker.command.run
 
 import cats.syntax.applicative.*
+import cats.syntax.eq.*
 import cats.syntax.functor.*
 import cats.syntax.traverse.*
-import cats.{Id, Monad, Show}
+import cats.{Eq, Id, Monad, Show}
 import com.comcast.ip4s.{Hostname, IpAddress}
 import com.peknight.codec.config.CodecConfig
 import com.peknight.codec.cursor.Cursor
@@ -72,16 +73,20 @@ object RunOptions:
     given Codec[F, S, Cursor[S], Boolean] = Codec.applicative[F, S, Cursor[S], Boolean](
       flag => if flag then BooleanType[S].to(true) else NullType[S].unit
     )(Decoder.decodeBooleanBS[Id, S].decode)
+    import squants.information.InformationConversions.*
+    given Eq[Information] = com.peknight.squants.instances.InformationInstances.eqInformation
+
     // docker --shm-size 格式: <number><unit>，unit 可选 b/k/m/g，省略 unit 则为 bytes
     def encodeDockerShmSize(info: Information): String =
-      if info >= 1.gigabytes && info.toGigabytes.toLong * 1.gigabytes == info then
+      val bytes = info.toBytes.toLong
+      if info >= 1.gigabytes && info.toGigabytes.toLong.gigabytes === info then
         s"${info.toGigabytes.toLong}g"
-      else if info >= 1.megabytes && info.toMegabytes.toLong * 1.megabytes == info then
+      else if info >= 1.megabytes && info.toMegabytes.toLong.megabytes === info then
         s"${info.toMegabytes.toLong}m"
-      else if info >= 1.kilobytes && info.toKilobytes.toLong * 1.kilobytes == info then
+      else if info >= 1.kilobytes && info.toKilobytes.toLong.kilobytes === info then
         s"${info.toKilobytes.toLong}k"
       else
-        s"${info.toBytes.toLong}b"
+        s"${bytes}b"
     def decodeDockerShmSize(s: String): Try[Information] = Try {
       val digits = s.takeWhile(_.isDigit).toLong
       s.dropWhile(_.isDigit).toLowerCase match
