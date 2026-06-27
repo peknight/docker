@@ -5,22 +5,15 @@ commonSettings
 
 lazy val docker = (project in file("."))
   .settings(name := "docker")
-  .aggregate(
-    dockerCore.jvm,
-    dockerCore.js,
-    dockerClient.jvm,
-    dockerClient.js,
-    dockerService.jvm,
-    dockerService.js,
-    dockerCustom.jvm,
-    dockerCustom.js,
-    dockerBuild.jvm,
-    dockerBuild.js,
-  )
+  .aggregate(dockerCore.projectRefs *)
+  .aggregate(dockerClient.projectRefs *)
+  .aggregate(dockerService.projectRefs *)
+  .aggregate(dockerCustom.projectRefs *)
+  .aggregate(dockerBuild.projectRefs *)
 
-lazy val dockerCore = (crossProject(JVMPlatform, JSPlatform) in file("docker-core"))
+lazy val dockerCore = (projectMatrix in file("docker-core"))
   .settings(name := "docker-core")
-  .settings(crossDependencies(
+  .settings(libraryDependencies ++= dependencies(
     peknight.os,
     peknight.fs2.io,
     peknight.network,
@@ -31,32 +24,42 @@ lazy val dockerCore = (crossProject(JVMPlatform, JSPlatform) in file("docker-cor
     peknight.codec.fs2.io,
     peknight.codec.squants,
   ))
-  .settings(crossTestDependencies(scalaTest))
+  .settings(libraryDependencies ++= testDependencies(scalaTest))
+  .jvmPlatform(scalaVersions = Seq(scala.scala3.version))
+  .jsPlatform(scalaVersions = Seq(scala.scala3.version))
 
-lazy val dockerClient = (crossProject(JVMPlatform, JSPlatform) in file("docker-client"))
+lazy val dockerClient = (projectMatrix in file("docker-client"))
   .dependsOn(dockerCore)
   .settings(name := "docker-client")
-  .settings(crossDependencies(http4s))
+  .settings(libraryDependencies ++= dependencies(http4s))
+  .jvmPlatform(scalaVersions = Seq(scala.scala3.version))
+  .jsPlatform(scalaVersions = Seq(scala.scala3.version))
 
-lazy val dockerService = (crossProject(JVMPlatform, JSPlatform) in file("docker-service"))
+lazy val dockerService = (projectMatrix in file("docker-service"))
   .dependsOn(dockerClient)
   .settings(name := "docker-service")
-  .settings(crossDependencies(
+  .settings(libraryDependencies ++= dependencies(
     peknight.logging,
   ))
+  .jvmPlatform(scalaVersions = Seq(scala.scala3.version))
+  .jsPlatform(scalaVersions = Seq(scala.scala3.version))
 
-lazy val dockerCustom = (crossProject(JVMPlatform, JSPlatform) in file("docker-custom"))
+lazy val dockerCustom = (projectMatrix in file("docker-custom"))
   .dependsOn(dockerService)
   .settings(name := "docker-custom")
-  .settings(crossDependencies(
+  .settings(libraryDependencies ++= dependencies(
     peknight.build.gav,
     peknight.fs2.io,
     peknight.app,
   ))
+  .jvmPlatform(scalaVersions = Seq(scala.scala3.version))
+  .jsPlatform(scalaVersions = Seq(scala.scala3.version))
 
-lazy val dockerBuild = (crossProject(JVMPlatform, JSPlatform) in file("docker-build"))
+lazy val dockerBuild = (projectMatrix in file("docker-build"))
   .dependsOn(dockerCore)
   .settings(name := "docker-build")
-  .settings(crossDependencies(
-      peknight.app.build,
+  .settings(libraryDependencies ++= dependencies(
+    peknight.app.build,
   ))
+  .jvmPlatform(scalaVersions = Seq(scala.scala3.version))
+  .jsPlatform(scalaVersions = Seq(scala.scala3.version))
