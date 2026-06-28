@@ -47,7 +47,7 @@ package object build:
   end goauthentik
   object infisical:
     /** @versionCheck https://hub.docker.com/v2/repositories/infisical/infisical/tags */
-    val infisical: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("infisical")), "infisical"), Some(Tag("v0.161.5")))
+    val infisical: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("infisical")), "infisical"), Some(Tag("v0.161.9")))
   end infisical
   object jenkins:
     /** @versionCheck https://hub.docker.com/v2/repositories/jenkins/jenkins/tags */
@@ -55,11 +55,11 @@ package object build:
   end jenkins
   object ollama:
     /** @versionCheck https://hub.docker.com/v2/repositories/ollama/ollama/tags */
-    val ollama: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("ollama")), "ollama"), Some(Tag("0.30.10")))
+    val ollama: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("ollama")), "ollama"), Some(Tag("0.30.11")))
   end ollama
   object openclaw:
     /** @versionCheck https://api.github.com/orgs/openclaw/packages/container/openclaw/versions */
-    val openclaw: ImageRepositoryTag = ImageRepositoryTag(Repository(Some(HostPort(host"ghcr.io")), Some(Namespace("openclaw")), "openclaw"), Some(Tag("2026.6.9")))
+    val openclaw: ImageRepositoryTag = ImageRepositoryTag(Repository(Some(HostPort(host"ghcr.io")), Some(Namespace("openclaw")), "openclaw"), Some(Tag("2026.6.10")))
   end openclaw
   object paulgauthier:
     /** @versionCheck https://hub.docker.com/v2/repositories/paulgauthier/aider/tags */
@@ -67,7 +67,7 @@ package object build:
   end paulgauthier
   object sonatype:
     /** @versionCheck https://hub.docker.com/v2/repositories/sonatype/nexus3/tags */
-    val nexus3: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("sonatype")), "nexus3"), Some(Tag("3.93.1-alpine")))
+    val nexus3: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("sonatype")), "nexus3"), Some(Tag("3.93.2-alpine")))
   end sonatype
   object rustdesk:
     /** @versionCheck https://hub.docker.com/v2/repositories/rustdesk/rustdesk-server/tags */

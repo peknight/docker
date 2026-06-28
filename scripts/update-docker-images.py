@@ -400,7 +400,7 @@ def find_image_name_before_anchor(lines: list[str], anchor_idx: int) -> str | No
 def update_docker_build_scala(repo_root: Path, apply: bool) -> list[dict]:
     """更新 docker-build/package.scala 中的镜像版本号。"""
     results = []
-    filepath = repo_root / "docker-build" / "shared" / "src" / "main" / "scala" / "com" / "peknight" / "docker" / "build" / "package.scala"
+    filepath = repo_root / "docker-build" / "src" / "main" / "scala" / "com" / "peknight" / "docker" / "build" / "package.scala"
     if not filepath.exists():
         return results
 
