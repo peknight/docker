@@ -69,7 +69,7 @@ def fetch_ghcr_tags(url: str) -> list[str] | None:
 
 def is_prerelease(version: str) -> bool:
     """判断版本是否为预发布版本。"""
-    markers = ["rc", "m", "snapshot", "snap", "alpha", "beta", "cr", "dev", "beta", "pre"]
+    markers = ["rc", "m", "snapshot", "snap", "alpha", "beta", "cr", "dev", "beta", "pre", "nightly"]
     lower = version.lower()
     for m in markers:
         if f"-{m}" in lower or lower.startswith(m):
