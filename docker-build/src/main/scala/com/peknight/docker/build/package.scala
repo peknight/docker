@@ -39,7 +39,7 @@ package object build:
   end apolloconfig
   object gitea:
     /** @versionCheck https://hub.docker.com/v2/repositories/gitea/gitea/tags */
-    val gitea: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("gitea")), "gitea"), Some(Tag("1.27-nightly-rootless")))
+    val gitea: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("gitea")), "gitea"), Some(Tag("1.26.4-rootless")))
   end gitea
   object goauthentik:
     /** @versionCheck https://api.github.com/orgs/goauthentik/packages/container/server/versions */
