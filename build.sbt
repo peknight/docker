@@ -3,8 +3,9 @@ import com.peknight.build.sbt.*
 
 commonSettings
 
-lazy val docker = (project in file("."))
+lazy val docker = rootProject
   .settings(name := "docker")
+  .settings(publish / skip := true)
   .aggregate(dockerCore.projectRefs *)
   .aggregate(dockerClient.projectRefs *)
   .aggregate(dockerService.projectRefs *)
