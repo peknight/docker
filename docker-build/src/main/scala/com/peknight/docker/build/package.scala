@@ -55,7 +55,7 @@ package object build:
   end jenkins
   object ollama:
     /** @versionCheck https://hub.docker.com/v2/repositories/ollama/ollama/tags */
-    val ollama: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("ollama")), "ollama"), Some(Tag("0.31.0")))
+    val ollama: ImageRepositoryTag = ImageRepositoryTag(Repository(None, Some(Namespace("ollama")), "ollama"), Some(Tag("0.31.1")))
   end ollama
   object openclaw:
     /** @versionCheck https://api.github.com/orgs/openclaw/packages/container/openclaw/versions */
